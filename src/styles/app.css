@@ -132,3 +132,6 @@ a.k-chip[aria-current="true"]{background:var(--ink);color:var(--on-ink);font-wei
 .admin-meta{display:flex;gap:var(--space-2);align-items:center}
 .k-notice ul{margin:0;padding-left:var(--space-5)}
 .preview-flag{background:var(--surface);border-radius:var(--radius-m);padding:var(--space-3) var(--space-4);font:500 13px/18px var(--font-sans);color:var(--ink)}
+
+.k-skeleton{height:180px;border-radius:var(--radius-m);background:var(--surface);animation:k-pulse 1.4s ease-in-out infinite}
+@keyframes k-pulse{0%,100%{opacity:1}50%{opacity:.55}}

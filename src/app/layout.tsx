@@ -8,7 +8,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: 'ӘЙДӘ ИНДЕ! — куда сходить в Казани', template: '%s · ӘЙДӘ ИНДЕ!' },
   description: 'Подберём занятие в Казани под настроение, компанию, дату и бюджет.',
-  openGraph: { type: 'website', locale: 'ru_RU', siteName: 'ӘЙДӘ ИНДЕ!' },
+  openGraph: {
+    type: 'website', locale: 'ru_RU', siteName: 'ӘЙДӘ ИНДЕ!',
+    images: [{ url: '/brand/logo/app-icon.png', width: 1024, height: 1024, alt: 'ӘЙДӘ ИНДЕ!' }],
+  },
+  twitter: { card: 'summary', images: ['/brand/logo/app-icon.png'] },
   icons: { icon: '/brand/logo/app-icon.svg' },
 };
 

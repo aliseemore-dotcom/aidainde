@@ -25,7 +25,8 @@ export default defineConfig({
   webServer: {
     command: 'npx next start -p 3100',
     url: 'http://localhost:3100',
-    reuseExistingServer: true,
+    reuseExistingServer: !!process.env.REUSE_SERVER,
+    env: { ALLOW_DEMO_CONTENT: 'true', RESULT_TOKEN_SECRET: 'e2e-secret-e2e-secret' },
     timeout: 60_000,
   },
 });

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { answerStep, goBack, goToStep, initialState, restoreState, InvalidAnswerError, type QuizState } from '@/features/quiz/state';
+import { walkPath } from '@/features/quiz/graph';
+import { QUIZ_SCHEMA_VERSION, START_STEP } from '@/features/quiz/types';
 
 const KEY = 'aydainde.quiz.draft';
 const TTL_MS = 24 * 60 * 60 * 1000;
@@ -31,7 +33,10 @@ function reducer(s: QuizState, a: Action): QuizState {
 export type DraftNotice = null | 'stale' | 'invalid';
 
 /** Состояние теста + черновик в localStorage (TTL 24 ч) + синхронизация с кнопками браузера. */
-export function useQuiz() {
+export interface EditRequest { token: string; step?: string }
+
+/** `edit` — вход из результатов: подгружаем прежние ответы по токену и открываем нужный шаг. */
+export function useQuiz(edit?: EditRequest | null) {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
   const [ready, setReady] = useState(false);
   const [notice, setNotice] = useState<DraftNotice>(null);
@@ -40,6 +45,32 @@ export function useQuiz() {
 
   // восстановление черновика (после гидрации, чтобы не ломать SSR-разметку)
   useEffect(() => {
+    let cancelled = false;
+    const finish = (restoredIdx: number, clearUrl: boolean) => {
+      if (cancelled) return;
+      history.replaceState({ ...history.state, quizIndex: restoredIdx }, '', clearUrl ? '/quiz' : undefined);
+      lastIdx.current = restoredIdx; // восстановленный шаг не создаёт лишнюю запись истории
+      setReady(true);
+    };
+
+    if (edit?.token) {
+      fetch(`/api/results/${encodeURIComponent(edit.token)}`)
+        .then(async (res) => {
+          if (!res.ok) throw new Error('gone');
+          const { quizAnswers } = await res.json();
+          const r = restoreState({ schemaVersion: QUIZ_SCHEMA_VERSION, quizType: 'main', currentStepId: START_STEP, answers: quizAnswers, visitedStepIds: [] });
+          if (!r.ok) throw new Error('stale');
+          const path = walkPath(r.state.answers).path;
+          const idx = Math.max(0, path.indexOf(edit.step ?? ''));
+          const st = goToStep(r.state, idx);
+          if (cancelled) return;
+          dispatch({ type: 'restore', state: st });
+          finish(st.visitedStepIds.length, true);
+        })
+        .catch(() => { if (!cancelled) { setNotice('invalid'); finish(0, true); } });
+      return () => { cancelled = true; };
+    }
+
     let restoredIdx = 0;
     try {
       const raw = localStorage.getItem(KEY);
@@ -54,9 +85,9 @@ export function useQuiz() {
         }
       }
     } catch { /* storage недоступен — работаем без черновика */ }
-    history.replaceState({ ...history.state, quizIndex: restoredIdx }, '');
-    lastIdx.current = restoredIdx; // восстановленный шаг не создаёт лишнюю запись истории
-    setReady(true);
+    finish(restoredIdx, false);
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

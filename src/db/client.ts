@@ -8,7 +8,9 @@ import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 import { Pool } from 'pg';
 import { PGlite } from '@electric-sql/pglite';
 import * as schema from './schema';
-import { isProductionDeploy, readEnv } from '@/lib/env';
+import { allowDemoContent, isProductionDeploy, readEnv } from '@/lib/env';
+import { seedTags } from '@/features/catalog/mutations';
+import { seedDemo } from './seed-demo';
 
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
@@ -34,7 +36,17 @@ async function connect(): Promise<Db> {
   const lite = new PGlite(path.join(process.cwd(), '.pglite'));
   const db = drizzleLite(lite, { schema });
   await migrateLite(db, { migrationsFolder: MIGRATIONS });
+  await bootstrapLocal(db as unknown as Db);
   return db as unknown as Db;
+}
+
+/** Локальная разработка: словарь тегов и (если разрешено) демо-записи появляются сами. */
+async function bootstrapLocal(db: Db): Promise<void> {
+  await seedTags(db);
+  if (allowDemoContent()) {
+    const [any] = await db.select({ id: schema.places.id }).from(schema.places).limit(1);
+    if (!any) await seedDemo(db);
+  }
 }
 
 /** Для тестов и скриптов: чистая in-memory БД с применёнными миграциями. */

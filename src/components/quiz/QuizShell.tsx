@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useQuiz } from './useQuiz';
 import { QuestionCard } from './QuestionCard';
@@ -20,7 +20,9 @@ type Submit = { status: 'idle' } | { status: 'loading' } | { status: 'error'; me
 
 export function QuizShell() {
   const router = useRouter();
-  const quiz = useQuiz();
+  const params = useSearchParams();
+  const from = params.get('from');
+  const quiz = useQuiz(from ? { token: from, step: params.get('step') ?? undefined } : null);
   const { state } = quiz;
   const [submit, setSubmit] = useState<Submit>({ status: 'idle' });
   const inflight = useRef(false);

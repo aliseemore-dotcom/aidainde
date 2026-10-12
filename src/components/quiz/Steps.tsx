@@ -120,8 +120,7 @@ export function NumberStep({ step, answers, onAnswer }: Props) {
 export function DateStep({ step, answers, onAnswer }: Props) {
   const saved = readAnswer(step, answers) as string | undefined;
   const [value, setValue] = useState(saved ?? '');
-  const [min, setMin] = useState<string | undefined>();
-  useEffect(() => { setMin(todayKazan(new Date())); }, []); // подсказка по часам клиента; решает сервер
+  const [min] = useState(() => todayKazan(new Date())); // подсказка по часам клиента; решает сервер
   const valid = /^\d{4}-\d{2}-\d{2}$/.test(value) && (!min || value >= min);
   return (
     <>

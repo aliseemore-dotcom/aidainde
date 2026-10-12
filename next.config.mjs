@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // PGlite (локальная БД) и pg грузят нативные/WASM-файлы сами; в бандл их упаковывать нельзя
+  serverExternalPackages: ['@electric-sql/pglite', 'pg'],
   // Разрешённые домены картинок (изображения только с правами — см. media.rightsStatus)
   images: { remotePatterns: [] },
   async headers() {

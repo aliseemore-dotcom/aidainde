@@ -1,43 +1,41 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getDb } from '@/db/client';
-import { getContentBySlug } from '@/features/catalog/queries';
+import { loadDetail } from '@/lib/preview';
 import { DetailShell, Facts, SourceBlock, TagList, ageText } from '@/components/catalog/DetailParts';
 import { ExternalLink, MapLink } from '@/components/catalog/MapLink';
 import { PlainText } from '@/components/catalog/PlainText';
 import { ErrorState } from '@/components/catalog/ErrorState';
 import { formatPrice, directionLabel } from '@/features/catalog/presentation';
 import { formatEventMeta, formatLongDate } from '@/lib/date-kazan';
-import { allowDemoContent } from '@/lib/env';
-import { safe } from '@/lib/db-safe';
 import type { events } from '@/db/schema';
 
 export const dynamic = 'force-dynamic';
 type Ev = typeof events.$inferSelect;
 const STATUS = { cancelled: 'Мероприятие отменено', sold_out: 'Билеты закончились' } as const;
 
-const load = (slug: string) => safe(async () => getContentBySlug(await getDb(), 'event', slug, { allowDemo: allowDemoContent() }));
+const load = (slug: string, preview: boolean) => loadDetail('event', slug, preview);
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const r = await load((await params).slug);
-  if (!r.ok || !r.value) return { title: 'Событие', robots: { index: false } };
-  const e = r.value.record as Ev;
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ preview?: string }> }): Promise<Metadata> {
+  const preview = (await searchParams).preview === '1';
+  const r = await load((await params).slug, preview);
+  if (!r.ok || !r.value.detail) return { title: 'Событие', robots: { index: false } };
+  const e = r.value.detail.record as Ev;
   const description = e.description.slice(0, 160);
-  return { title: e.title, description, openGraph: { title: e.title, description, type: 'article' }, robots: r.value.isDemo ? { index: false } : undefined };
+  return { title: e.title, description, openGraph: { title: e.title, description, type: 'article' }, robots: preview || r.value.detail.isDemo ? { index: false } : undefined };
 }
 
-export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function EventPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ preview?: string }> }) {
   const { slug } = await params;
-  const r = await load(slug);
+  const r = await load(slug, (await searchParams).preview === '1');
   if (!r.ok) return <div className="page"><ErrorState retryHref={`/events/${slug}`} /></div>;
-  if (!r.value) notFound();
-  const d = r.value;
+  if (!r.value.detail) notFound();
+  const d = r.value.detail;
   const e = d.record as Ev;
   const unavailable = STATUS[e.status as keyof typeof STATUS];
   const sessions = [{ startsAt: e.startsAt, endsAt: e.endsAt, status: e.status === 'published' ? 'published' : e.status }, ...d.occurrences];
   return (
-    <DetailShell d={d} backHref="/explore?type=event" backLabel="В каталог">
+    <DetailShell d={d} previewing={r.value.previewing} backHref="/explore?type=event" backLabel="В каталог">
       <div className="stack stack--tight">
         <p className="t-meta">{formatLongDate(e.startsAt)} · {formatEventMeta(e.startsAt)} · {directionLabel(d.tags) ?? 'Событие'}</p>
         <h1 className="t-h1">{e.title}</h1>

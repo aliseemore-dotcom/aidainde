@@ -8,7 +8,7 @@ import { illustrationFor } from '@/features/catalog/presentation';
 import { tagLabel } from '@/features/recommend/tag-registry';
 import type { ContentDetail } from '@/features/catalog/queries';
 
-export function DetailShell({ d, backHref, backLabel, children }: { d: ContentDetail; backHref: string; backLabel: string; children: ReactNode }) {
+export function DetailShell({ d, backHref, backLabel, previewing = false, children }: { d: ContentDetail; backHref: string; backLabel: string; previewing?: boolean; children: ReactNode }) {
   const { art, warm } = illustrationFor(d.tags);
   return (
     <div className="page">
@@ -17,6 +17,7 @@ export function DetailShell({ d, backHref, backLabel, children }: { d: ContentDe
         <LogoLink />
       </header>
       <div className="stack">
+        {previewing && <PreviewBanner status={d.status} />}
         {d.isDemo && <p className="demo-flag" role="note">Демо, вымышленная запись: не настоящее место или событие.</p>}
         {d.media.length > 0 ? (
           <div className="gallery">
@@ -73,4 +74,8 @@ export function groupText(min?: number | null, max?: number | null): string | nu
   if (min == null && max == null) return null;
   if (min != null && max != null) return `${min}–${max} человек`;
   return min != null ? `от ${min} человек` : `до ${max} человек`;
+}
+
+export function PreviewBanner({ status }: { status: string }) {
+  return <p className="preview-flag" role="note">Предпросмотр для редактора. Статус записи: {status === 'published' ? 'опубликовано' : 'не опубликовано, посетители её не видят'}.</p>;
 }

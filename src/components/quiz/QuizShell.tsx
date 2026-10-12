@@ -16,7 +16,8 @@ import { estimateRemaining } from '@/features/quiz/progress';
 import { finalizeAnswers } from '@/features/quiz/graph';
 import { TERMINAL_STEP } from '@/features/quiz/types';
 
-type Submit = { status: 'idle' } | { status: 'loading' } | { status: 'error'; message: string };
+// idle в конце теста показывается как «Собираем подборку…»
+type Submit = { status: 'idle' } | { status: 'error'; message: string };
 
 export function QuizShell() {
   const router = useRouter();
@@ -32,7 +33,6 @@ export function QuizShell() {
   async function complete() {
     if (inflight.current) return;
     inflight.current = true;
-    setSubmit({ status: 'loading' });
     try {
       const res = await fetch('/api/quiz/complete', {
         method: 'POST',
@@ -58,6 +58,8 @@ export function QuizShell() {
   }
 
   useEffect(() => {
+    // запрос к серверу — синхронизация с внешней системой; setState внутри complete() вызывается только после await
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (quiz.ready && atEnd && submit.status === 'idle') void complete();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz.ready, atEnd]);

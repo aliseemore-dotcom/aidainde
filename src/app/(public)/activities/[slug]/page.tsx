@@ -1,38 +1,36 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getDb } from '@/db/client';
-import { getContentBySlug } from '@/features/catalog/queries';
+import { loadDetail } from '@/lib/preview';
 import { DetailShell, Facts, SourceBlock, TagList, ageText, groupText } from '@/components/catalog/DetailParts';
 import { PlainText } from '@/components/catalog/PlainText';
 import { ErrorState } from '@/components/catalog/ErrorState';
 import { formatPrice } from '@/features/catalog/presentation';
-import { allowDemoContent } from '@/lib/env';
-import { safe } from '@/lib/db-safe';
 import type { activities } from '@/db/schema';
 
 export const dynamic = 'force-dynamic';
 type Act = typeof activities.$inferSelect;
 
-const load = (slug: string) => safe(async () => getContentBySlug(await getDb(), 'activity', slug, { allowDemo: allowDemoContent() }));
+const load = (slug: string, preview: boolean) => loadDetail('activity', slug, preview);
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const r = await load((await params).slug);
-  if (!r.ok || !r.value) return { title: 'Идея на дом', robots: { index: false } };
-  const a = r.value.record as Act;
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ preview?: string }> }): Promise<Metadata> {
+  const preview = (await searchParams).preview === '1';
+  const r = await load((await params).slug, preview);
+  if (!r.ok || !r.value.detail) return { title: 'Идея на дом', robots: { index: false } };
+  const a = r.value.detail.record as Act;
   const description = a.description.slice(0, 160);
-  return { title: a.title, description, openGraph: { title: a.title, description, type: 'article' }, robots: r.value.isDemo ? { index: false } : undefined };
+  return { title: a.title, description, openGraph: { title: a.title, description, type: 'article' }, robots: preview || r.value.detail.isDemo ? { index: false } : undefined };
 }
 
-export default async function ActivityPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ActivityPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ preview?: string }> }) {
   const { slug } = await params;
-  const r = await load(slug);
+  const r = await load(slug, (await searchParams).preview === '1');
   if (!r.ok) return <div className="page"><ErrorState retryHref={`/activities/${slug}`} /></div>;
-  if (!r.value) notFound();
-  const d = r.value;
+  if (!r.value.detail) notFound();
+  const d = r.value.detail;
   const a = d.record as Act;
   const duration = a.durationMinutes ? (a.durationMinutes >= 60 ? `${Math.floor(a.durationMinutes / 60)} ч${a.durationMinutes % 60 ? ` ${a.durationMinutes % 60} мин` : ''}` : `${a.durationMinutes} мин`) : null;
   return (
-    <DetailShell d={d} backHref="/explore?type=activity" backLabel="В каталог">
+    <DetailShell d={d} previewing={r.value.previewing} backHref="/explore?type=activity" backLabel="В каталог">
       <div className="stack stack--tight">
         <p className="t-meta">Идея на дом</p>
         <h1 className="t-h1">{a.title}</h1>

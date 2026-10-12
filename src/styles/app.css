@@ -112,3 +112,23 @@ a.k-chip[aria-current="true"]{background:var(--ink);color:var(--on-ink);font-wei
 .demo-flag{background:var(--surface);border-radius:var(--radius-m);padding:var(--space-3) var(--space-4);font:500 13px/18px var(--font-sans);color:var(--danger)}
 .occ{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)}
 .occ li{display:flex;justify-content:space-between;gap:var(--space-3);background:var(--surface);border-radius:var(--radius-m);padding:var(--space-3) var(--space-4);font:400 14px/18px var(--font-sans)}
+
+/* Админка */
+.admin-nav{align-items:center;margin-bottom:var(--space-5)}
+.admin-nav form{display:contents}
+.admin-input,.admin-form input[type="text"],.admin-form input[type="url"],.admin-form input[type="number"],.admin-form input[type="email"],.admin-form input[type="datetime-local"],.admin-form select,.admin-form textarea,.admin-row input,.admin-row select,.field input.admin-input{min-height:44px;padding:0 var(--space-4);border:none;border-radius:var(--radius-m);background:var(--surface);font:400 15px/22px var(--font-sans);color:var(--ink);width:100%}
+.admin-form textarea{padding:var(--space-3) var(--space-4);resize:vertical}
+.admin-form{display:flex;flex-direction:column;gap:var(--space-5)}
+.admin-grid{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
+@media (min-width:640px){.admin-grid{grid-template-columns:1fr 1fr}.admin-wide{grid-column:1/-1}}
+.admin-fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-3)}
+.admin-fieldset legend{padding:0;margin-bottom:var(--space-2)}
+.admin-row{display:grid;grid-template-columns:1fr;gap:var(--space-2)}
+@media (min-width:640px){.admin-row{grid-template-columns:2fr 2fr 1fr auto}}
+.admin-check{display:flex;align-items:center;gap:var(--space-2);font:400 14px/18px var(--font-sans)}
+.admin-check input{width:20px;height:20px}
+.admin-actions{position:sticky;bottom:var(--space-5);padding:var(--space-3);background:var(--glass);border-radius:var(--radius-l)}
+.admin-danger{color:var(--danger)}
+.admin-meta{display:flex;gap:var(--space-2);align-items:center}
+.k-notice ul{margin:0;padding-left:var(--space-5)}
+.preview-flag{background:var(--surface);border-radius:var(--radius-m);padding:var(--space-3) var(--space-4);font:500 13px/18px var(--font-sans);color:var(--ink)}

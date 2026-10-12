@@ -36,3 +36,20 @@ export function isAllowedImageUrl(url: string, hosts: string[]): boolean {
     return u.protocol === 'https:' && hosts.includes(u.hostname.toLowerCase());
   } catch { return false; }
 }
+
+/**
+ * Защита от CSRF для изменяющих запросов с cookie-сессией: нужен JSON и совпадающее происхождение.
+ * Если заголовка Origin нет (не браузер), cookie-сессии всё равно не будет, и авторизация не пройдёт.
+ */
+export function assertSameOrigin(req: Request, opts: { json?: boolean } = {}): void {
+  const origin = req.headers.get('origin');
+  if (origin) {
+    const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host') ?? new URL(req.url).host;
+    let ok = false;
+    try { ok = new URL(origin).host === host; } catch { ok = false; }
+    if (!ok) throw new ApiError('FORBIDDEN', 'Запрос с чужого сайта отклонён');
+  }
+  if (opts.json !== false && !(req.headers.get('content-type') ?? '').includes('application/json')) {
+    throw new ApiError('INVALID_CONTENT', 'Ожидается application/json');
+  }
+}

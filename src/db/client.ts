@@ -22,7 +22,8 @@ const g = globalThis as unknown as { __db?: Promise<Db> };
  * (с миграциями «на лету»); в боевом деплое без DATABASE_URL — ошибка, а не тихая пустая база.
  */
 export function getDb(): Promise<Db> {
-  g.__db ??= connect();
+  // упавшее подключение не кэшируем: следующий запрос попробует снова
+  g.__db ??= connect().catch((e) => { g.__db = undefined; throw e; });
   return g.__db;
 }
 

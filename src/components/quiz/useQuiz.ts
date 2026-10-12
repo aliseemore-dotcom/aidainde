@@ -81,6 +81,7 @@ export function useQuiz(edit?: EditRequest | null) {
         } else {
           const r = restoreState(saved);
           if (r.ok) { dispatch({ type: 'restore', state: r.state }); restoredIdx = r.state.visitedStepIds.length; }
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- синхронизация с внешним хранилищем (localStorage) при монтировании
           else { setNotice(r.reason === 'STALE_QUIZ_VERSION' ? 'stale' : 'invalid'); localStorage.removeItem(KEY); }
         }
       }

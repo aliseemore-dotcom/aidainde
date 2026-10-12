@@ -95,6 +95,22 @@ describe('сервис результатов', () => {
     expect(await code(completeQuiz(db, body({ ...a, targetDate: '2026-10-12' }), { ...ctx, now: new Date('2026-10-12T21:30:00Z') }))).toBe('INVALID_ANSWER');
   });
 
+  it('погода: сбой источника не ломает подборку; прогноз попадает в ответ и в результаты по токену', async () => {
+    const outdoor = { ...answers, setting: 'any', direction: 'walks', branchAnswers: { W1: 'scenic', W2: 'near' }, budgetTier: 'any', companion: 'solo', socialEnergy: 'low', mood: 'relax' } as Record<string, unknown>;
+    delete outdoor.partySize; delete outdoor.budgetBasis;
+    const boom = await completeQuiz(db, body(outdoor), { ...ctx, weather: async () => { throw new Error('api down'); } });
+    expect(boom.weather).toBeNull();
+    expect(boom.results.length).toBeGreaterThan(0);
+    const none = await completeQuiz(db, body(outdoor), { ...ctx, weather: async () => null });
+    expect(none.weather).toBeNull();
+    const bad = { risk: 'dangerous' as const, summary: 'ожидается гроза', source: 'open-meteo', fetchedAt: NOW.toISOString() };
+    const out = await completeQuiz(db, body(outdoor), { ...ctx, weather: async () => bad });
+    expect(out.weather).toEqual(bad);
+    const back = await getResults(db, out.sessionToken, { ...ctx, weather: async () => bad });
+    expect(back.weather?.risk).toBe('dangerous');
+    expect(back.items.length).toBeGreaterThan(0);
+  });
+
   it('пустой каталог — успешный ответ с пустым списком, а не ошибка', async () => {
     const empty = await createMemoryDb();
     const out = await completeQuiz(empty, body(), ctx);

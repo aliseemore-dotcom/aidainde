@@ -3,13 +3,18 @@ import { explain } from './reasons';
 import { score, type Match } from './scoring';
 import { NEIGHBOR_DIRECTIONS } from './tag-map';
 import { TAG_BY_KEY, DIRECTION_TAGS, mostSpecific } from './tag-registry';
-import type { Candidate, EngineInput, FinalAnswers, Recommendation, RecommendationResult, RelaxedFilter, Tier } from './types';
+import type { Candidate, EngineInput, FinalAnswers, NoteCode, Recommendation, RecommendationResult, RelaxedFilter, Tier, WeatherInfo } from './types';
 import type { Eligible } from './eligibility';
 
 export const MAX_MAIN = 7;
 export const MIN_MAIN = 3;
 export const MAX_PRICE_UNKNOWN = 3;
 export const DIVERSITY_WINDOW = 15;
+/** Штраф к баллу уличных вариантов при плохой/опасной погоде: опускаем в выдаче, но не удаляем (§8.6). */
+export const WEATHER_PENALTY = { ok: 0, bad: 10, dangerous: 25 } as const;
+export const MAX_INDOOR_ALTERNATIVES = 3;
+
+const isOutdoorish = (c: Candidate) => c.setting === 'outdoor' || c.setting === 'both';
 
 interface Scored { c: Candidate; el: Eligible; m: Match }
 
@@ -47,12 +52,19 @@ export function diversify<T extends { c: Candidate; m: { score: number } }>(sort
   return out;
 }
 
-function toRec(s: Scored, a: FinalAnswers, tier: Tier): Recommendation {
+/** С прогнозом нейтральное «Проверьте погоду» заменяется конкретикой; без прогноза остаётся нейтральным. */
+function notesFor(s: Scored, weather: WeatherInfo | undefined): NoteCode[] {
+  if (!weather) return s.el.notes;
+  const notes = s.el.notes.filter((n) => n !== 'check_weather');
+  return weather.risk !== 'ok' && isOutdoorish(s.c) ? [...notes, 'bad_weather'] : notes;
+}
+
+function toRec(s: Scored, a: FinalAnswers, tier: Tier, weather?: WeatherInfo): Recommendation {
   const { reasons, codes } = explain(s.c, a, s.m, s.el.occurrence, s.el.cost);
   return {
     type: s.c.type, id: s.c.id, slug: s.c.slug, title: s.c.title, tier, score: s.m.score,
     reasons: reasons.length ? reasons : ['Похожая идея рядом с твоим выбором'],
-    reasonCodes: codes, notes: s.el.notes,
+    reasonCodes: codes, notes: notesFor(s, weather),
     when: s.el.occurrence ? { startsAt: s.el.occurrence.startsAt.toISOString(), endsAt: s.el.occurrence.endsAt?.toISOString() ?? null } : null,
     priceMin: s.c.priceMin, priceMax: s.c.priceMax, priceUnit: s.c.priceUnit, isDemo: s.c.isDemo, tags: s.c.tags,
   };
@@ -64,11 +76,14 @@ function toRec(s: Scored, a: FinalAnswers, tier: Tier): Recommendation {
  * -> разнообразие -> блок «Стоимость уточняется».
  */
 export function recommend(input: EngineInput): RecommendationResult {
-  const { answers: a, range, now, allowDemo } = input;
+  const { answers: a, range, now, allowDemo, weather } = input;
+  const penalty = weather ? WEATHER_PENALTY[weather.risk] : 0;
   const eligible: Scored[] = [];
   for (const c of input.candidates) {
     const el = checkEligibility(c, a, { range, now, allowDemo });
-    if (el.ok) eligible.push({ c, el, m: score(c, a) });
+    if (!el.ok) continue;
+    const m = score(c, a);
+    eligible.push({ c, el, m: penalty && isOutdoorish(c) ? { ...m, score: Math.max(0, m.score - penalty) } : m });
   }
 
   const unknownPriceGoesBelow = a.budgetTier !== 'any';
@@ -103,14 +118,26 @@ export function recommend(input: EngineInput): RecommendationResult {
   const similar = diversify(similarPool, Math.max(0, MAX_MAIN - main.length));
 
   let items: Recommendation[] = [
-    ...main.map((s) => toRec(s, a, 'main')),
-    ...similar.map((s) => toRec(s, a, tierOf.get(s.c.id) ?? 'similar')),
+    ...main.map((s) => toRec(s, a, 'main', weather)),
+    ...similar.map((s) => toRec(s, a, tierOf.get(s.c.id) ?? 'similar', weather)),
   ];
 
   // «Стоимость уточняется» — ниже уверенных вариантов; только из подходящих по теме
   if (unknownPriceGoesBelow) {
     const unknown = [...strict, ...loose].filter(isUnknown).sort(byRank).slice(0, MAX_PRICE_UNKNOWN);
-    items = [...items, ...unknown.map((s) => toRec(s, a, 'price_unknown'))];
+    items = [...items, ...unknown.map((s) => toRec(s, a, 'price_unknown', weather))];
   }
-  return { items, relaxed: items.length ? relaxed : [], empty: items.length === 0 };
+
+  // Опасная погода: предупреждаем и показываем безопасные варианты в помещении. Выбор пользователя не меняем сами.
+  let indoorAlternatives: Recommendation[] | undefined;
+  if (weather?.risk === 'dangerous' && (a.setting === 'outside' || a.setting === 'any')) {
+    const shown = new Set(items.map((i) => i.id));
+    const alt = recommend({ ...input, answers: { ...a, setting: 'indoor' }, weather: undefined });
+    indoorAlternatives = alt.items.filter((i) => i.tier !== 'price_unknown' && !shown.has(i.id)).slice(0, MAX_INDOOR_ALTERNATIVES);
+    if (!indoorAlternatives.length) indoorAlternatives = undefined;
+  }
+  return {
+    items, relaxed: items.length ? relaxed : [], empty: items.length === 0,
+    ...(weather ? { weather } : {}), ...(indoorAlternatives ? { indoorAlternatives } : {}),
+  };
 }

@@ -50,7 +50,7 @@ export type Tier = 'main' | 'similar' | 'price_unknown';
 
 export type NoteCode =
   | 'check_weather' | 'check_hours' | 'price_unknown' | 'partial_age' | 'capacity_unknown'
-  | 'book_ahead' | 'verify_availability' | 'age_unknown';
+  | 'book_ahead' | 'verify_availability' | 'age_unknown' | 'bad_weather';
 
 export const NOTE_TEXT: Record<NoteCode, string> = {
   check_weather: 'Проверьте погоду перед прогулкой',
@@ -61,6 +61,7 @@ export const NOTE_TEXT: Record<NoteCode, string> = {
   book_ahead: 'Лучше записаться заранее',
   verify_availability: 'Наличие мест проверяйте у организатора',
   age_unknown: 'Возрастные ограничения уточняйте у организатора',
+  bad_weather: 'Погода может подвести',
 };
 
 export interface Recommendation {
@@ -84,9 +85,15 @@ export interface Recommendation {
 
 export type RelaxedFilter = { key: 'subtype' | 'direction'; label: string };
 
+export interface WeatherInfo { risk: 'ok' | 'bad' | 'dangerous'; summary: string; source: string; fetchedAt: string }
+
 export interface RecommendationResult {
   items: Recommendation[];
   relaxed: RelaxedFilter[];
+  /** прогноз, учтённый при подборе; отсутствует, если прогноза нет */
+  weather?: WeatherInfo;
+  /** при опасной погоде: безопасные варианты в помещении (предлагаем сменить выбор, но сами не меняем) */
+  indoorAlternatives?: Recommendation[];
   /** Почему пусто (для понятных кнопок), если items пуст */
   empty: boolean;
 }
@@ -97,4 +104,6 @@ export interface EngineInput {
   now: Date;
   candidates: Candidate[];
   allowDemo: boolean;
+  /** прогноз на выбранные даты; нет прогноза — undefined */
+  weather?: WeatherInfo;
 }

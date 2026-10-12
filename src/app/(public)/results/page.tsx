@@ -9,6 +9,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { ApiError } from '@/lib/errors';
 import { allowDemoContent, readEnv, tokenSecret } from '@/lib/env';
 import { safe } from '@/lib/db-safe';
+import { weatherFor } from '@/lib/weather';
 import type { Recommendation } from '@/features/recommend/types';
 
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
   const res = await safe(async () => {
     const env = readEnv();
     try {
-      return await getResults(await getDb(), session, { now: new Date(), allowDemo: allowDemoContent(env), secret: tokenSecret(env) });
+      return await getResults(await getDb(), session, { now: new Date(), allowDemo: allowDemoContent(env), secret: tokenSecret(env), weather: (range) => weatherFor(range) });
     } catch (e) {
       if (e instanceof ApiError && (e.code === 'CONTENT_NOT_FOUND' || e.code === 'STALE_QUIZ_VERSION')) return e.code;
       throw e;
@@ -69,6 +70,20 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
         </div>
         <p className="t-meta">{DAY_LABEL[r.answers.dayChoice]} · {BUDGET_LABEL[r.answers.budgetTier]}</p>
 
+        {r.weather && r.weather.risk !== 'ok' && (
+          <div className="k-notice" role={r.weather.risk === 'dangerous' ? 'alert' : 'status'}>
+            <p className="t-body">
+              {r.weather.risk === 'dangerous'
+                ? `Прогноз на выбранные дни: ${r.weather.summary}. Для безопасности лучше выбрать занятие в помещении.`
+                : `Прогноз на выбранные дни: ${r.weather.summary}. Уличные варианты опущены ниже.`}
+            </p>
+            {r.weather.risk === 'dangerous' && (
+              <div className="actions"><ButtonLink href={edit('COMMON.Q4')} variant="sunken">Выбрать «Под крышу»</ButtonLink></div>
+            )}
+          </div>
+        )}
+        {r.weather?.risk === 'ok' && <p className="t-meta">Прогноз на выбранные дни: {r.weather.summary}.</p>}
+
         {r.dateExpired && (
           <div className="k-notice" role="status">
             <p className="t-body">Выбранная дата уже прошла, поэтому события могут не показаться. Выбери новую дату.</p>
@@ -95,6 +110,13 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
               <section className="section" aria-labelledby="similar">
                 <h2 id="similar" className="t-h2">Похожие идеи</h2>
                 <ul className="grid">{similar.map((i) => <li key={i.id}><ResultCard card={toCard(i)} /></li>)}</ul>
+              </section>
+            )}
+            {r.indoorAlternatives && r.indoorAlternatives.length > 0 && (
+              <section className="section" aria-labelledby="indoor">
+                <h2 id="indoor" className="t-h2">Безопаснее в помещении</h2>
+                <p className="t-meta">Показываем из-за прогноза. Твой выбор мы не меняли: решай сам.</p>
+                <ul className="grid">{r.indoorAlternatives.map((i) => <li key={i.id}><ResultCard card={toCard(i)} /></li>)}</ul>
               </section>
             )}
             {unknown.length > 0 && (

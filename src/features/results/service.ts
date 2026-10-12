@@ -4,7 +4,7 @@ import type { Db } from '@/db/client';
 import { quizSessions, recommendationLogs } from '@/db/schema';
 import { loadCandidates } from '@/features/catalog/queries';
 import { recommend } from '@/features/recommend/engine';
-import type { FinalAnswers, RecommendationResult } from '@/features/recommend/types';
+import type { FinalAnswers, RecommendationResult, WeatherInfo } from '@/features/recommend/types';
 import { finalizeAnswers } from '@/features/quiz/graph';
 import { validateComplete } from '@/features/quiz/schema';
 import { QUIZ_SCHEMA_VERSION, QUIZ_TYPE_MAIN, type QuizAnswers } from '@/features/quiz/types';
@@ -16,7 +16,11 @@ export const SESSION_TTL_DAYS = 30;
 
 const envelope = z.object({ schemaVersion: z.number().int(), quizType: z.string(), answers: z.unknown() });
 
-export interface Ctx { now: Date; allowDemo: boolean; secret: string; logRecommendations?: boolean }
+export interface Ctx {
+  now: Date; allowDemo: boolean; secret: string; logRecommendations?: boolean;
+  /** прогноз на даты; не задан или вернул null — работаем без погоды */
+  weather?: (range: DateRange) => Promise<WeatherInfo | null>;
+}
 
 export interface ResultsPayload extends RecommendationResult {
   range: DateRange;
@@ -28,8 +32,12 @@ export interface ResultsPayload extends RecommendationResult {
 }
 
 async function compute(db: Db, a: FinalAnswers, range: DateRange, ctx: Ctx): Promise<RecommendationResult> {
-  const candidates = await loadCandidates(db, { allowDemo: ctx.allowDemo });
-  return recommend({ answers: a, range, now: ctx.now, candidates, allowDemo: ctx.allowDemo });
+  const [candidates, weather] = await Promise.all([
+    loadCandidates(db, { allowDemo: ctx.allowDemo }),
+    // сбой источника погоды никогда не ломает подборку
+    ctx.weather ? ctx.weather(range).catch(() => null) : Promise.resolve(null),
+  ]);
+  return recommend({ answers: a, range, now: ctx.now, candidates, allowDemo: ctx.allowDemo, ...(weather ? { weather } : {}) });
 }
 
 function summarize(a: FinalAnswers): ResultsPayload['answers'] {
@@ -72,6 +80,8 @@ export async function completeQuiz(db: Db, body: unknown, ctx: Ctx) {
     relaxedFilters: result.relaxed,
     reasons: Object.fromEntries(result.items.map((i) => [i.id, i.reasons])),
     empty: result.empty,
+    weather: result.weather ?? null,
+    indoorAlternatives: result.indoorAlternatives ?? [],
   };
 }
 

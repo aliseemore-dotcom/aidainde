@@ -263,3 +263,43 @@ describe('подборка', () => {
     expect(run(answers(), [demo], true).empty).toBe(false);
   });
 });
+
+describe('погода (§8.6)', () => {
+  const walk = (over: Partial<Candidate> = {}) => cand({ tags: ['walks', 'walk_scenic', 'mood_relax', 'company_solo'], setting: 'outdoor', priceMin: 0, priceMax: 0, priceUnit: 'total', ...over });
+  const a = answers({ setting: 'any', direction: 'walks', branchAnswers: { W1: 'scenic' }, companion: 'solo', partySize: 1, mood: 'relax', socialEnergy: 'any', budgetTier: 'any' });
+  const w = (risk: 'ok' | 'bad' | 'dangerous', summary = 'тест') => ({ risk, summary, source: 'open-meteo', fetchedAt: NOW.toISOString() });
+  const go = (weather: ReturnType<typeof w> | undefined, cands: Candidate[]) =>
+    recommend({ answers: a, range: resolveDayChoice('weekend', NOW), now: NOW, candidates: cands, allowDemo: false, weather });
+
+  it('без прогноза остаётся нейтральное «Проверьте погоду»; прогноз не изобретается', () => {
+    const r = go(undefined, [walk()]);
+    expect(r.items[0]!.notes).toContain('check_weather');
+    expect(r.weather).toBeUndefined();
+  });
+
+  it('хорошая погода убирает общую подсказку, плохая — не удаляет уличные варианты, а опускает их', () => {
+    const outdoor = walk(); const indoorWalk = walk({ setting: 'indoor', tags: ['walks', 'walk_scenic', 'mood_relax', 'company_solo'] });
+    expect(go(w('ok'), [outdoor]).items[0]!.notes).not.toContain('check_weather');
+    const bad = go(w('bad', 'вероятны осадки'), [outdoor, indoorWalk]);
+    expect(bad.items).toHaveLength(2); // ничего не удалено
+    expect(bad.items[0]!.id).toBe(indoorWalk.id); // уличный опущен ниже
+    expect(bad.items.find((i) => i.id === outdoor.id)!.notes).toContain('bad_weather');
+    expect(go(w('ok'), [outdoor, indoorWalk]).items[0]!.id).not.toBeUndefined();
+  });
+
+  it('опасная погода: предупреждение, безопасные варианты в помещении, выбор пользователя не меняется', () => {
+    const outdoors = [walk(), walk(), walk()];
+    const indoorB = cand({ tags: ['culture', 'culture_visual', 'mood_relax', 'company_solo'], setting: 'indoor', priceMin: 0, priceMax: 0, priceUnit: 'total' });
+    const indoorA = indoorB;
+    const r = go(w('dangerous', 'ожидается гроза'), [...outdoors, indoorB]);
+    expect(r.weather!.risk).toBe('dangerous');
+    expect(outdoors.every((o) => r.items.some((i) => i.id === o.id))).toBe(true); // уличные не удалены
+    expect(r.indoorAlternatives!.map((i) => i.id)).toEqual([indoorB.id]);
+    expect(r.indoorAlternatives!.every((i) => !outdoors.some((o) => o.id === i.id))).toBe(true);
+    // если безопасные варианты уже показаны в основной выдаче, дублировать их незачем
+    expect(go(w('dangerous'), [walk(), indoorB]).indoorAlternatives).toBeUndefined();
+    // уже выбранное «в помещении» — альтернативы не нужны
+    const inA = recommend({ answers: { ...a, setting: 'indoor' }, range: resolveDayChoice('weekend', NOW), now: NOW, candidates: [indoorA], allowDemo: false, weather: w('dangerous') });
+    expect(inA.indoorAlternatives).toBeUndefined();
+  });
+});

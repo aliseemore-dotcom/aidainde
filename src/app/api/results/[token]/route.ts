@@ -3,6 +3,7 @@ import { getResults } from '@/features/results/service';
 import { handle } from '@/lib/errors';
 import { allowDemoContent, readEnv, tokenSecret } from '@/lib/env';
 import { clientIp, rateLimit } from '@/lib/security';
+import { weatherFor } from '@/lib/weather';
 
 export const dynamic = 'force-dynamic';
 

@@ -94,7 +94,7 @@ export function ContentForm({ type, id, initial, places, role }: {
           </div>
         ))}
         {type === 'place' && <>
-          <div className="field"><label htmlFor="f-phone">Телефон</label><input id="f-phone" value={form.phone ?? ''} onChange={(e) => set('phone', e.target.value)} /></div>
+          <div className="field"><label htmlFor="f-phone">Телефон</label><input id="f-phone" type="text" inputMode="tel" value={form.phone ?? ''} onChange={(e) => set('phone', e.target.value)} /></div>
           <div className="field"><label htmlFor="f-email">Почта</label><input id="f-email" type="email" value={form.email ?? ''} onChange={(e) => set('email', e.target.value)} /></div>
         </>}
         {type === 'event' && (
@@ -110,7 +110,7 @@ export function ContentForm({ type, id, initial, places, role }: {
       </div>
 
       <fieldset className="admin-fieldset"><legend className="t-h2">Теги</legend>
-        <p className="t-meta">Нужен минимум один тег-направление (прогулки, заведения, игры, культура, спокойный отдых). Неизвестные боту теги не засчитываются.</p>
+        <p className="t-meta">Нужен минимум один тег-направление (прогулки, заведения, игры, культура, спокойный отдых). Подбор учитывает только эти теги: других в системе нет.</p>
         {Object.entries(byGroup).map(([g, list]) => (
           <div key={g} className="stack stack--tight"><p className="t-meta">{GROUP_LABEL[g] ?? g}</p>
             <div className="chips">{list.map((t) => (

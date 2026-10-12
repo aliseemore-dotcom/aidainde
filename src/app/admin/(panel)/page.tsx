@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { count, eq } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { activities, events, places } from '@/db/schema';
+import { guardAdminPage } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminHome() {
+  await guardAdminPage();
   const db = await getDb();
   const n = async (t: typeof places | typeof events | typeof activities, status?: 'published' | 'draft') =>
     Number(((await db.select({ n: count() }).from(t).where(status ? eq(t.status, status) : undefined)) as [{ n: number }])[0].n);

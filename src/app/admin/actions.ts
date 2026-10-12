@@ -1,6 +1,7 @@
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { e2eAuthEnabled } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { supabaseConfigured, supabaseServer } from '@/lib/supabase/server';
 import { clientIp, rateLimit } from '@/lib/security';
@@ -24,6 +25,7 @@ export async function signIn(formData: FormData): Promise<void> {
 }
 
 export async function signOut(): Promise<void> {
+  if (e2eAuthEnabled()) (await cookies()).delete('e2e_admin');
   if (supabaseConfigured()) await (await supabaseServer()).auth.signOut();
   redirect('/admin/login');
 }

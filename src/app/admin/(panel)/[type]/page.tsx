@@ -6,11 +6,13 @@ import { STATUS_LABEL } from '@/components/admin/fields';
 import { ButtonLink } from '@/components/ui/Button';
 import { parseType } from '@/app/api/admin/_shared';
 import { ApiError } from '@/lib/errors';
+import { guardAdminPage } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 const TITLE = { places: 'Места', events: 'События', activities: 'Идеи на дом' } as const;
 
 export default async function AdminList({ params }: { params: Promise<{ type: string }> }) {
+  await guardAdminPage();
   const { type: raw } = await params;
   let type;
   try { type = parseType(raw); } catch (e) { if (e instanceof ApiError) notFound(); throw e; }

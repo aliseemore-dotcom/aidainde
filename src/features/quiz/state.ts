@@ -64,6 +64,14 @@ export function goBack(state: QuizState): QuizState {
   return { ...state, currentStepId: prev, visitedStepIds: state.visitedStepIds.slice(0, -1) };
 }
 
+/** Browser back/forward: jump to the step at `index` of the answered path (answers are kept). */
+export function goToStep(state: QuizState, index: number): QuizState {
+  const { path } = walkPath(state.answers);
+  const i = Math.max(0, Math.min(index, path.length - 1));
+  if (i === state.visitedStepIds.length) return state;
+  return { ...state, currentStepId: path[i]!, visitedStepIds: path.slice(0, i) };
+}
+
 export type RestoreResult =
   | { ok: true; state: QuizState }
   | { ok: false; reason: 'STALE_QUIZ_VERSION' | 'INVALID_STATE' };

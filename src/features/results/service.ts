@@ -10,6 +10,7 @@ import { validateComplete } from '@/features/quiz/schema';
 import { QUIZ_SCHEMA_VERSION, QUIZ_TYPE_MAIN, type QuizAnswers } from '@/features/quiz/types';
 import { ApiError } from '@/lib/errors';
 import { hashToken, looksLikeToken, newToken } from '@/lib/security';
+import { recordMetrics } from './metrics';
 import { isPastDate, resolveDayChoice, todayKazan, type DateRange } from '@/lib/date-kazan';
 
 export const SESSION_TTL_DAYS = 30;
@@ -73,6 +74,11 @@ export async function completeQuiz(db: Db, body: unknown, ctx: Ctx) {
       sessionId: session!.id, contentType: i.type, contentId: i.id, score: i.score, reasonCodes: i.reasonCodes,
     })));
   }
+
+  await recordMetrics(db, [
+    'quiz_completed', result.empty ? 'results_empty' : 'results_ok',
+    `setting:${answers.setting}`, `companion:${answers.companion}`, ...(answers.direction ? [`direction:${answers.direction}`] : []),
+  ], ctx.now);
 
   return {
     sessionToken: token,

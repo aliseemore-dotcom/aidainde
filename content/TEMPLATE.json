@@ -1,0 +1,16 @@
+[
+  {
+    "type": "place",
+    "slug": "[SLUG-ЛАТИНИЦЕЙ]",
+    "title": "[НАЗВАНИЕ МЕСТА]",
+    "description": "[ОПИСАНИЕ: только проверенные факты]",
+    "address": "[АДРЕС]",
+    "sourceUrl": "[ССЫЛКА НА ПЕРВОИСТОЧНИК]",
+    "indoorOutdoor": "indoor",
+    "priceMin": null,
+    "priceMax": null,
+    "priceUnit": "unknown",
+    "tags": ["venues"],
+    "verifiedAt": null
+  }
+]

@@ -1,5 +1,5 @@
 import {
-  boolean, doublePrecision, index, integer, jsonb, pgEnum, pgTable, primaryKey, text,
+  boolean, date, doublePrecision, index, integer, jsonb, pgEnum, pgTable, primaryKey, text,
   timestamp, uniqueIndex, uuid,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
@@ -170,3 +170,10 @@ export const auditLog = pgTable('audit_log', {
   diffJson: jsonb('diff_json'),
   createdAt: ts('created_at').notNull().defaultNow(),
 });
+
+/** Агрегированные счётчики без персональных данных: день (по Казани) + ключ -> количество. */
+export const metricsDaily = pgTable('metrics_daily', {
+  day: date('day', { mode: 'string' }).notNull(),
+  key: text('key').notNull(),
+  n: integer('n').notNull().default(0),
+}, (t) => [primaryKey({ columns: [t.day, t.key] })]);

@@ -5,5 +5,5 @@ const p = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
 
 export default defineConfig({
   resolve: { alias: { '@': p('./src'), 'server-only': p('./src/tests/stubs/server-only.ts') } },
-  test: { include: ['src/tests/unit/**/*.test.ts', 'src/tests/integration/**/*.test.ts'], testTimeout: 30_000 },
+  test: { include: ['src/tests/unit/**/*.test.ts', 'src/tests/integration/**/*.test.{ts,tsx}'], testTimeout: 30_000 },
 });

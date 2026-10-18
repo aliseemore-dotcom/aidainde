@@ -21,6 +21,11 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, them
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
+      <head>
+        {/* основные начертания грузим заранее: меньше «прыжков» текста при открытии */}
+        <link rel="preload" as="font" type="font/woff2" href="/fonts/onest-cyrillic-400.woff2" crossOrigin="anonymous" />
+        <link rel="preload" as="font" type="font/woff2" href="/fonts/onest-latin-400.woff2" crossOrigin="anonymous" />
+      </head>
       <body className="k-root">{children}</body>
     </html>
   );

@@ -10,7 +10,7 @@ import { ApiError } from '@/lib/errors';
 export async function signIn(formData: FormData): Promise<void> {
   if (!supabaseConfigured()) redirect('/admin/login?error=config');
   const h = await headers();
-  try { rateLimit(`login:${clientIp(new Request('http://x', { headers: h }))}`, 8, 60_000); } catch (e) {
+  try { await rateLimit(`login:${clientIp(new Request('http://x', { headers: h }))}`, 8, 60_000); } catch (e) {
     if (e instanceof ApiError) redirect('/admin/login?error=rate');
     throw e;
   }

@@ -9,6 +9,8 @@ const schema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().optional(),
   IMAGE_HOSTS: z.string().optional(),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional().or(z.literal('').transform(() => undefined)),
+  UPSTASH_REDIS_REST_TOKEN: z.string().optional().or(z.literal('').transform(() => undefined)),
   VERCEL_ENV: z.string().optional(),
   APP_ENV: z.string().optional(),
 });

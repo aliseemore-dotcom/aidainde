@@ -8,7 +8,7 @@ import { weatherFor } from '@/lib/weather';
 export const dynamic = 'force-dynamic';
 
 export const POST = handle(async (req: Request) => {
-  rateLimit(`complete:${clientIp(req)}`, 20, 60_000);
+  await rateLimit(`complete:${clientIp(req)}`, 20, 60_000);
   const body = await readJson(req);
   const env = readEnv();
   const out = await completeQuiz(await getDb(), body, {

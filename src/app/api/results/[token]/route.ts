@@ -8,7 +8,7 @@ import { weatherFor } from '@/lib/weather';
 export const dynamic = 'force-dynamic';
 
 export const GET = handle(async (req: Request, { params }: { params: Promise<{ token: string }> }) => {
-  rateLimit(`results:${clientIp(req)}`, 60, 60_000);
+  await rateLimit(`results:${clientIp(req)}`, 60, 60_000);
   const { token } = await params;
   const env = readEnv();
   const out = await getResults(await getDb(), token, { now: new Date(), allowDemo: allowDemoContent(env), secret: tokenSecret(env) });

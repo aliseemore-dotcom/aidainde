@@ -97,7 +97,7 @@ export function QuizShell() {
   const props = { step, answers: state.answers, onAnswer: answer };
 
   return (
-    <div className="page page--quiz">
+    <div className="page page--quiz" data-quiz-ready="true">
       <div className="quiz-top">
         {state.visitedStepIds.length > 0 ? (
           <IconButton label="Назад" onClick={quiz.back}><ArrowLeft size={22} strokeWidth={ICON_STROKE} aria-hidden="true" /></IconButton>

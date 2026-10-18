@@ -1,6 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const pick = (page: Page, label: string | RegExp) => page.getByRole('button', { name: label }).first().click();
+/** Открывает тест и ждёт, пока страница «оживёт»: иначе клавиша или запись в localStorage гонятся с гидрацией. */
+async function openQuiz(page: Page) {
+  await page.goto('/quiz');
+  await page.locator('[data-quiz-ready="true"]').waitFor();
+}
 
 test.describe('главная', () => {
   test('три равноправных входа и заголовок', async ({ page }) => {
@@ -49,7 +54,7 @@ test.describe('тест', () => {
   });
 
   test('клавиатура: цифры выбирают вариант', async ({ page }) => {
-    await page.goto('/quiz');
+    await openQuiz(page);
     await page.keyboard.press('1');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Кого берём с собой в это маленькое приключение?');
   });
@@ -71,7 +76,7 @@ test.describe('тест', () => {
   });
 
   test('чужая версия черновика: предупреждение и старт заново', async ({ page }) => {
-    await page.goto('/quiz');
+    await openQuiz(page); // иначе поздний эффект сохранения перезапишет подложенный черновик
     await page.evaluate(() => localStorage.setItem('aydainde.quiz.draft', JSON.stringify({
       savedAt: Date.now(),
       state: { schemaVersion: 0, quizType: 'main', currentStepId: 'COMMON.Q2', answers: { socialEnergy: 'high' }, visitedStepIds: ['COMMON.Q1'] },

@@ -8,8 +8,9 @@ const as = (ctx: BrowserContext, role: 'editor' | 'admin', baseURL: string) =>
 const uid = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
 
 async function fillPlace(page: Page, slug: string, title: string) {
-  await page.getByLabel('Название', { exact: true }).fill(title);
+  // сначала slug: название при потере фокуса само предлагает slug, и ввод не должен с этим гоняться
   await page.getByLabel('Адрес страницы (slug)').fill(slug);
+  await page.getByLabel('Название', { exact: true }).fill(title);
   await page.getByLabel('Описание', { exact: true }).fill('Тестовое описание места, созданное из админки.');
   await page.getByLabel('Адрес', { exact: true }).fill('ул. Тестовая, 1');
   await page.getByLabel('Ссылка на первоисточник').fill('https://example.com/source');
@@ -60,8 +61,8 @@ test.describe('админка: полный сценарий редактора'
 
   test('публикация события без даты проверки: понятная ошибка, введённое сохраняется', async ({ page }) => {
     await page.goto('/admin/events/new');
-    await page.getByLabel('Название', { exact: true }).fill('E2E: событие без проверки');
     await page.getByLabel('Адрес страницы (slug)').fill(`e2e-ev-${uid()}`);
+    await page.getByLabel('Название', { exact: true }).fill('E2E: событие без проверки');
     await page.getByLabel('Описание', { exact: true }).fill('Описание события для проверки ошибок.');
     await page.getByLabel('Начало (время Казани)').fill('2030-01-01T19:00');
     await page.getByLabel('Ссылка на первоисточник').fill('https://example.com/e');
@@ -100,5 +101,15 @@ test.describe('роли', () => {
     await page.getByRole('button', { name: 'Удалить' }).click();
     await expect(page).toHaveURL(/\/admin\/places$/);
     await expect(page.getByText('E2E: на удаление')).toHaveCount(0);
+  });
+});
+
+test.describe('удобство формы', () => {
+  test('slug предлагается из названия, пока редактор не ввёл свой', async ({ context, page, baseURL }) => {
+    await as(context, 'editor', baseURL!);
+    await page.goto('/admin/places/new');
+    await page.getByLabel('Название', { exact: true }).fill('Кофейня на Баумана');
+    await page.getByLabel('Описание', { exact: true }).click(); // потеря фокуса названием
+    await expect(page.getByLabel('Адрес страницы (slug)')).toHaveValue('kofeynya-na-baumana');
   });
 });

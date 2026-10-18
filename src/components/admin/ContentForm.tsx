@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { FIELDS, STATUS_OPTIONS, type Field } from './fields';
 import { buildPayload, initialForm, type MediaRow, type OccRow } from './form-codec';
 import { TAGS } from '@/features/recommend/tag-registry';
+import { slugify } from '@/features/catalog/slug';
 import type { ContentType } from '@/features/recommend/types';
 
 const SECTION = { place: 'places', event: 'events', activity: 'activities' } as const;
@@ -70,7 +71,11 @@ export function ContentForm({ type, id, initial, places, role }: {
       case 'number': return <input {...common} type="number" step="any" min={f.name === 'lat' || f.name === 'lng' ? undefined : 0} onChange={(e) => set(f.name, e.target.value)} />;
       case 'datetime': return <input {...common} type="datetime-local" onChange={(e) => set(f.name, e.target.value)} />;
       case 'url': return <input {...common} type="url" inputMode="url" onChange={(e) => set(f.name, e.target.value)} />;
-      default: return <input {...common} type="text" onChange={(e) => set(f.name, e.target.value)} />;
+      default: return (
+        <input {...common} type="text" onChange={(e) => set(f.name, e.target.value)}
+          // для новой записи slug предлагается из названия, пока редактор не ввёл свой
+          onBlur={f.name === 'title' && !id ? () => setForm((x) => (x.slug || !x.title ? x : { ...x, slug: slugify(x.title) })) : undefined} />
+      );
     }
   };
   const byGroup = TAGS.reduce<Record<string, (typeof TAGS)[number][]>>((m, t) => { (m[t.group] ??= []).push(t); return m; }, {});

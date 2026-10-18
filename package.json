@@ -16,7 +16,8 @@
     "admin:make": "tsx scripts/make-admin.ts",
     "test:e2e": "playwright test",
     "content:import": "tsx scripts/import.ts",
-    "content:check": "tsx scripts/content-check.ts"
+    "content:check": "tsx scripts/content-check.ts",
+    "content:csv": "tsx scripts/csv-to-json.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.9",

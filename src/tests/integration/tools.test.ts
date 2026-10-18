@@ -122,3 +122,34 @@ describe('приватные счётчики', () => {
     expect((await readMetrics(d, NOW)).totals.quiz_completed).toBe(1);
   });
 });
+
+describe('таблица → импорт → БД', () => {
+  it('места, затем события с привязкой к месту по slug; неизвестная площадка пропускается с понятной причиной', async () => {
+    const { csvToRecords } = await import('@/features/catalog/csv-import');
+    const { COLUMNS } = await import('@/features/catalog/csv-schema');
+    const { places, events } = await import('@/db/schema');
+    const d = await createMemoryDb();
+    await seedTags(d);
+    const q = (x: string) => (/[;"\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
+    const csv = (type: 'place' | 'event', vals: Record<string, string>) =>
+      [COLUMNS[type].map((c) => c.header).join(';'), COLUMNS[type].map((c) => q(vals[c.header] ?? '')).join(';')].join('\n');
+
+    const pl = csvToRecords('place', csv('place', { 'Название': 'Филармония', 'Описание': 'Концертный зал в центре города.', 'Адрес': 'ул. Пример, 1', 'Источник (ссылка)': 'https://example.org/f', 'Дата проверки': '12.10.2026', 'Теги': 'Культура' }));
+    expect(pl.issues).toEqual([]);
+    const placeParsed = parseImport(pl.records);
+    expect((await runImport(d, placeParsed.records, ADMIN)).created).toBe(1);
+
+    const ev = (slug: string) => csvToRecords('event', csv('event', { 'Название': 'Вечерний концерт', 'Описание': 'Концерт камерной музыки.', 'Площадка (slug места)': slug, 'Начало': '17.10.2026 19:00', 'Источник (ссылка)': 'https://example.org/e', 'Дата проверки': '12.10.2026', 'Теги': 'Культура' }));
+    const ok = await runImport(d, parseImport(ev('filarmoniya').records).records, ADMIN);
+    expect(ok.created).toBe(1);
+    const [stored] = await d.select().from(events);
+    const [place] = await d.select().from(places);
+    expect(stored!.placeId).toBe(place!.id);
+    expect(stored!.status).toBe('draft'); // импорт сам не публикует
+    expect(stored!.startsAt.toISOString()).toBe('2026-10-17T16:00:00.000Z');
+
+    const missing = await runImport(d, parseImport([{ ...ev('net-takoy').records[0]!, slug: 'ev-2' }]).records, ADMIN);
+    expect(missing.created).toBe(0);
+    expect(missing.skipped[0]!.message).toMatch(/Площадка «net-takoy» не найдена/);
+  });
+});

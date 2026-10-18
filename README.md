@@ -2,7 +2,7 @@
 
 Веб-сервис подбора досуга: человек отвечает на несколько вопросов (настроение, компания, место, направление, дата, бюджет) и получает **детерминированную** подборку реальных мест, событий и домашних идей из собственного каталога. Без нейросетей, без выдуманных данных.
 
-Документы: [Спецификация](CLAUDE_CODE_SPEC.md) · [План](IMPLEMENTATION_PLAN.md) · [Граф теста](QUIZ_GRAPH.md) · [Решения и противоречия](DECISIONS.md) · [Дизайн-код](design-kit/DESIGN_CODE.md)
+Документы: [Архитектура](docs/ARCHITECTURE.md) · [Руководство по наполнению](docs/CONTENT_GUIDE.md) · [Спецификация](CLAUDE_CODE_SPEC.md) · [План](IMPLEMENTATION_PLAN.md) · [Граф теста](QUIZ_GRAPH.md) · [Решения и противоречия](DECISIONS.md) · [Дизайн-код](design-kit/DESIGN_CODE.md)
 
 Стек: Next.js (App Router) · TypeScript · Tailwind (пресет дизайн-кита) · Postgres (Supabase) + Drizzle ORM · Zod · Vitest · Playwright.
 
@@ -51,7 +51,7 @@ npm run content:import -- файл.json             # запись как ЧЕР
 npm run content:import -- файл.json --publish   # сразу публиковать то, что проходит правила
 npm run content:check                           # перед запуском: нет demo, у опубликованного есть дата проверки
 ```
-Формат — `content/TEMPLATE.json`. Записи с незаполненными заглушками вида `[ЦЕНА]`, демо-записи и дубликаты slug не загружаются. Импорт ничего не выдумывает: данные нужно собрать и проверить по первоисточнику.
+Проще всего собирать данные в Excel/Google Таблицах: шаблон `content/catalog-template.xlsx`, инструкция — [CONTENT_GUIDE](docs/CONTENT_GUIDE.md). Лист экспортируйте в CSV (UTF-8) и выполните `npm run content:csv -- places файл.csv` (или `events`, `activities`): скрипт проверит строки и назовёт ошибки по строке и колонке, затем `content:import`. Формат JSON — `content/TEMPLATE.json`. Записи с незаполненными заглушками вида `[ЦЕНА]`, демо-записи и дубликаты slug не загружаются. Импорт ничего не выдумывает: данные нужно собрать и проверить по первоисточнику.
 
 ## Админка
 

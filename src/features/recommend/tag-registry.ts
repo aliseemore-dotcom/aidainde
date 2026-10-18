@@ -20,7 +20,7 @@ export const TAGS: readonly TagDef[] = [
   t('category', 'in_city', 'В черте города'), t('category', 'outskirts', 'За городом'),
   // заведения
   t('category', 'venue_food_talk', 'Еда и разговоры'), t('category', 'venue_play', 'Игры в заведении'),
-  t('category', 'venue_music', 'Музыка'), t('category', 'venue_quiet', 'Тихо и уютно'), t('category', 'venue_unusual', 'Необычное'),
+  t('category', 'venue_music', 'Музыка'), t('category', 'venue_quiet', 'Тихо и уютно'), t('category', 'venue_unusual', 'Необычное заведение'),
   // игры
   t('gameStyle', 'game_mind', 'Головоломки'), t('gameStyle', 'game_quiz', 'Квиз'), t('gameStyle', 'game_escape', 'Квест'),
   t('gameStyle', 'game_strategy', 'Стратегии'), t('gameStyle', 'game_physical', 'Активные игры'),
@@ -32,7 +32,7 @@ export const TAGS: readonly TagDef[] = [
   t('competitionMode', 'comp_cooperative', 'Вместе против задачи'),
   // культура
   t('category', 'culture_visual', 'Искусство и архитектура'), t('category', 'culture_story', 'Театр, кино, лекции'),
-  t('category', 'culture_make', 'Творческое занятие'), t('category', 'culture_unusual', 'Необычное'),
+  t('category', 'culture_make', 'Творческое занятие'), t('category', 'culture_unusual', 'Необычное событие'),
   t('format', 'fmt_watch', 'Смотреть и слушать'), t('format', 'fmt_participate', 'Участвовать самому'),
   // спокойный отдых
   t('category', 'well_body', 'Расслабить тело'), t('category', 'well_cozy', 'Уют и напиток'),

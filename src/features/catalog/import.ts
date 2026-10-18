@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import type { Db } from '@/db/client';
+import { eq } from 'drizzle-orm';
+import { places } from '@/db/schema';
 import { createContent, PublishError, SlugTakenError } from './mutations';
 import { inputByType } from './validators';
 import type { ContentType } from '@/features/recommend/types';
@@ -56,7 +58,13 @@ export async function runImport(db: Db, records: ParsedRecord[], adminUserId: st
   for (const r of records) {
     const slug = typeof r.data.slug === 'string' ? r.data.slug : undefined;
     try {
-      await createContent(db, r.type, opts.publish ? { ...r.data, status: 'published' } : r.data, adminUserId);
+      const { placeSlug, ...data } = r.data as Record<string, unknown> & { placeSlug?: unknown };
+      if (r.type === 'event' && typeof placeSlug === 'string' && placeSlug) {
+        const [p] = await db.select({ id: places.id }).from(places).where(eq(places.slug, placeSlug)).limit(1);
+        if (!p) { skipped.push({ index: r.index, slug, message: `Площадка «${placeSlug}» не найдена: сначала загрузите места` }); continue; }
+        data.placeId = p.id;
+      }
+      await createContent(db, r.type, opts.publish ? { ...data, status: 'published' } : data, adminUserId);
       created++;
     } catch (e) {
       const message = e instanceof SlugTakenError ? 'Такой slug уже есть: пропущено'

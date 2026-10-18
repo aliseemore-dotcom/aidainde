@@ -38,6 +38,18 @@ describe('форма админки', () => {
     await waitFor(() => expect(push).toHaveBeenCalledWith('/admin/places/5b2f2b8e-0000-4000-8000-000000000001'));
   });
 
+  it('slug предлагается из названия, но не перетирает введённый вручную', () => {
+    render(<ContentForm type="place" initial={null} places={[]} role="editor" />);
+    const title = screen.getByLabelText('Название');
+    fireEvent.change(title, { target: { value: 'Кофейня на Баумана' } });
+    fireEvent.blur(title);
+    expect(screen.getByLabelText('Адрес страницы (slug)')).toHaveValue('kofeynya-na-baumana');
+    fill('Адрес страницы (slug)', 'moy-slug');
+    fireEvent.change(title, { target: { value: 'Другое название' } });
+    fireEvent.blur(title);
+    expect(screen.getByLabelText('Адрес страницы (slug)')).toHaveValue('moy-slug');
+  });
+
   it('ошибки публикации показываются списком и не теряют введённое', async () => {
     fetchMock(422, { error: { code: 'PUBLISH_REQUIREMENTS', message: 'Для публикации не хватает данных', details: [{ field: 'verifiedAt', message: 'Отметьте, когда данные проверены по первоисточнику' }] } });
     render(<ContentForm type="event" initial={null} places={[{ id: 'p1', title: 'Площадка' }]} role="editor" />);

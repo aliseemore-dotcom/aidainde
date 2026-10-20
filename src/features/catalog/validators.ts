@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { DIRECTION_TAGS, TAG_KEYS } from '@/features/recommend/tag-registry';
+import { PLACE_KIND_KEYS } from './place-kinds';
 
 const url = z.string().url().refine((u) => /^https?:\/\//i.test(u), 'Только http(s)');
 const optUrl = url.nullish();
@@ -26,6 +27,7 @@ const media = z.array(mediaItem).default([]);
 
 export const placeInput = z.object({
   ...base,
+  kind: z.enum(PLACE_KIND_KEYS).nullish(),
   address: z.string().trim().min(3),
   lat: z.number().min(-90).max(90).nullish(), lng: z.number().min(-180).max(180).nullish(),
   district: z.string().nullish(),

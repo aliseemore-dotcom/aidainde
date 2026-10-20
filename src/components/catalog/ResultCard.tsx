@@ -3,13 +3,14 @@ import { Art } from '@/components/ui/Art';
 import { ArrowUpRight, ICON_STROKE } from '@/components/ui/icons';
 import { illustrationFor, formatPrice, TYPE_LABEL, TYPE_PATH } from '@/features/catalog/presentation';
 import { NOTE_TEXT, type NoteCode } from '@/features/recommend/types';
+import { placeKindLabel } from '@/features/catalog/place-kinds';
 import { formatEventMeta } from '@/lib/date-kazan';
 
 export interface CardData {
   type: 'place' | 'event' | 'activity'; slug: string; title: string; tags: string[];
   priceMin: number | null; priceMax: number | null; priceUnit: 'per_person' | 'total' | 'unknown';
   startsAt?: string | null; status?: string; isDemo?: boolean;
-  reasons?: string[]; notes?: NoteCode[]; district?: string | null;
+  reasons?: string[]; notes?: NoteCode[]; district?: string | null; kind?: string | null;
 }
 
 const STATUS_TEXT: Record<string, string> = { cancelled: 'Отменено', sold_out: 'Билеты закончились' };
@@ -17,7 +18,7 @@ const STATUS_TEXT: Record<string, string> = { cancelled: 'Отменено', sol
 /** Карточка в списках. Фото в карточках не показываем (дизайн-код): только иллюстрация-плитка. */
 export function ResultCard({ card }: { card: CardData }) {
   const { art, warm } = illustrationFor(card.tags);
-  const meta = [TYPE_LABEL[card.type], card.startsAt ? formatEventMeta(new Date(card.startsAt)) : null, card.district].filter(Boolean).join(' · ');
+  const meta = [placeKindLabel(card.kind) ?? TYPE_LABEL[card.type], card.startsAt ? formatEventMeta(new Date(card.startsAt)) : null, card.district].filter(Boolean).join(' · ');
   const unavailable = card.status ? STATUS_TEXT[card.status] : undefined;
   return (
     <article className="k-card k-card--wide k-card--link">

@@ -2,6 +2,7 @@ import { COLUMNS, type Col } from './csv-schema';
 import { parseCsv } from './csv';
 import { slugify, uniqueSlug } from './slug';
 import { TAGS } from '@/features/recommend/tag-registry';
+import { PLACE_KINDS } from './place-kinds';
 import { KAZAN_UTC_OFFSET } from '@/lib/date-kazan';
 import type { ContentType } from '@/features/recommend/types';
 
@@ -12,6 +13,7 @@ const norm = (s: string) => s.toLowerCase().replace(/ё/g, 'е').replace(/[*\s]+
 const TAG_BY_NAME = new Map<string, string>();
 for (const t of TAGS) { TAG_BY_NAME.set(norm(t.label), t.key); TAG_BY_NAME.set(norm(t.key), t.key); }
 
+const KIND_BY_NAME = new Map<string, string>(PLACE_KINDS.flatMap((k) => [[norm(k.label), k.key], [norm(k.key), k.key]] as [string, string][]));
 const PRICE_UNIT: Record<string, string> = { 'с человека': 'per_person', 'за человека': 'per_person', 'за всех': 'total', 'за компанию': 'total', 'неизвестно': 'unknown', '': 'unknown' };
 const SETTING: Record<string, string> = { 'в помещении': 'indoor', 'на улице': 'outdoor', 'и там и там': 'both', 'и то и другое': 'both', 'неизвестно': 'unknown', '': 'unknown' };
 const TRI: Record<string, boolean | null> = { 'да': true, 'нет': false, 'неизвестно': null, '': null };
@@ -53,6 +55,7 @@ function convert(col: Col, raw: string): unknown {
     }
     case 'date': return v === '' ? null : parseKazanDate(v, false);
     case 'datetime': return v === '' ? null : parseKazanDate(v, true);
+    case 'placeKind': { if (v === '') return null; const r = KIND_BY_NAME.get(norm(v)); if (!r) throw new CellError('выберите тип из списка (ресторан, кафе, музей…)'); return r; }
     case 'priceUnit': { const r = PRICE_UNIT[norm(v)]; if (!r) throw new CellError('допустимо: с человека / за всех / неизвестно'); return r; }
     case 'setting': { const r = SETTING[norm(v)]; if (!r) throw new CellError('допустимо: в помещении / на улице / и там и там / неизвестно'); return r; }
     case 'tri': { const k = norm(v); if (!(k in TRI)) throw new CellError('допустимо: да / нет / неизвестно'); return TRI[k]; }

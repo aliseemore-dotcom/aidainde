@@ -4,7 +4,7 @@ import type { ContentType } from '@/features/recommend/types';
  * Колонки таблицы для сбора контента (Excel / Google Таблицы). Единственный источник правды:
  * по нему строится шаблон .xlsx и разбор CSV. Заголовки на русском, звёздочка — обязательное поле.
  */
-export type ColKind = 'text' | 'long' | 'number' | 'url' | 'date' | 'datetime' | 'priceUnit' | 'setting' | 'tri' | 'tags' | 'list' | 'hours';
+export type ColKind = 'placeKind' | 'text' | 'long' | 'number' | 'url' | 'date' | 'datetime' | 'priceUnit' | 'setting' | 'tri' | 'tags' | 'list' | 'hours';
 export interface Col { key: string; header: string; kind: ColKind; required?: boolean; hint: string }
 
 const c = (key: string, header: string, kind: ColKind, hint: string, required = false): Col => ({ key, header, kind, hint, required });
@@ -19,6 +19,7 @@ const PRICE = [
 export const COLUMNS: Record<ContentType, Col[]> = {
   place: [
     c('title', 'Название', 'text', 'Как называется место.', true),
+    c('kind', 'Тип места', 'placeKind', 'Выберите из списка: ресторан, кафе, музей, театр, парк…'),
     c('slug', 'Адрес страницы (slug)', 'text', 'Латиницей. Можно оставить пустым: сформируется из названия.'),
     c('description', 'Описание', 'long', 'Только проверенные факты, от 10 символов. Ничего не выдумываем.', true),
     c('address', 'Адрес', 'text', 'Улица, дом.', true),

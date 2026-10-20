@@ -13,7 +13,7 @@ export function publicView(d: ContentDetail) {
   };
   if (d.type === 'place') return {
     ...common,
-    ...pick('address', 'lat', 'lng', 'district', 'websiteUrl', 'bookingUrl', 'openingHoursJson', 'priceMin', 'priceMax', 'priceUnit', 'priceCurrency', 'ageMin', 'ageMax', 'minParticipants', 'maxParticipants', 'indoorOutdoor', 'durationMinutes', 'sourceUrl', 'verifiedAt', 'requiresBooking'),
+    ...pick('kind', 'address', 'lat', 'lng', 'district', 'websiteUrl', 'bookingUrl', 'openingHoursJson', 'priceMin', 'priceMax', 'priceUnit', 'priceCurrency', 'ageMin', 'ageMax', 'minParticipants', 'maxParticipants', 'indoorOutdoor', 'durationMinutes', 'sourceUrl', 'verifiedAt', 'requiresBooking'),
     contacts: r.contactsJson ?? null,
   };
   if (d.type === 'event') return {

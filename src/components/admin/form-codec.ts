@@ -63,7 +63,7 @@ export function buildPayload(
       case 'tristate': out[f.name] = tri(v); break;
       case 'datetime': out[f.name] = fromKazanInput(v); break;
       case 'url': out[f.name] = orNull(v); break;
-      case 'select': out[f.name] = f.name === 'indoorOutdoor' && type === 'event' ? orNull(v) : v; break;
+      case 'select': out[f.name] = (f.name === 'indoorOutdoor' && type === 'event') || f.name === 'kind' ? orNull(v) : v; break;
       case 'lines': out.requiredMaterialsJson = v.split('\n').map((x) => x.trim()).filter(Boolean); break;
       case 'hours': {
         const entries = v.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => { const i = l.indexOf(':'); return i > 0 ? [l.slice(0, i).trim(), l.slice(i + 1).trim()] : [l, '']; });

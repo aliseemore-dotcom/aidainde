@@ -21,7 +21,7 @@ const BUDGET_LABEL = { free: 'Бесплатно', low: 'До 1 000 ₽', mid: '
 
 const toCard = (i: Recommendation) => ({
   type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit,
-  startsAt: i.when?.startsAt ?? null, isDemo: i.isDemo, reasons: i.reasons, notes: i.notes,
+  startsAt: i.when?.startsAt ?? null, isDemo: i.isDemo, kind: i.kind, reasons: i.reasons, notes: i.notes,
 });
 
 export default async function ResultsPage({ searchParams }: { searchParams: Promise<{ session?: string }> }) {

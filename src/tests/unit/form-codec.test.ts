@@ -35,6 +35,14 @@ describe('кодек формы админки', () => {
     expect(parsed.occurrences[0]!.status).toBe('sold_out');
   });
 
+  it('тип места: пустой выбор уходит как null, выбранный — как ключ; восстанавливается при редактировании', () => {
+    const { form } = initialForm('place', null);
+    expect(form.kind).toBe('');
+    expect(buildPayload('place', form, ['venues'], [], [], 'draft').kind).toBeNull();
+    expect(buildPayload('place', { ...form, kind: 'museum' }, ['culture'], [], [], 'draft').kind).toBe('museum');
+    expect(initialForm('place', { kind: 'bar', title: 'A', slug: 'a', tags: [], media: [] }).form.kind).toBe('bar');
+  });
+
   it('форма редактирования восстанавливает сохранённые значения', () => {
     const { form, tags } = initialForm('place', { title: 'A', slug: 'a', priceMin: 0, soloFriendly: false, openingHoursJson: { 'Пн': '10–20' }, tags: ['walks'], status: 'published', isDemo: true });
     expect(form.priceMin).toBe('0');

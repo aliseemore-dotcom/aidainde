@@ -57,7 +57,7 @@ export async function loadCandidates(db: Db, opts: { allowDemo: boolean }): Prom
 
   const out: Candidate[] = [];
   for (const p of pl) out.push({
-    type: 'place', id: p.id, slug: p.slug, title: p.title, description: p.description, status: p.status, isDemo: p.isDemo,
+    type: 'place', id: p.id, slug: p.slug, title: p.title, description: p.description, status: p.status, isDemo: p.isDemo, kind: p.kind,
     tags: pt.get(p.id) ?? [], setting: p.indoorOutdoor, priceMin: p.priceMin, priceMax: p.priceMax, priceUnit: p.priceUnit,
     ageMin: p.ageMin, ageMax: p.ageMax, minParticipants: p.minParticipants, maxParticipants: p.maxParticipants,
     soloFriendly: p.soloFriendly, joinOpenGroup: p.joinOpenGroup, requiresBooking: p.requiresBooking, durationMinutes: p.durationMinutes,
@@ -94,7 +94,7 @@ export async function loadCandidates(db: Db, opts: { allowDemo: boolean }): Prom
 export interface CardSummary {
   type: ContentType; id: string; slug: string; title: string; status: string; isDemo: boolean;
   tags: string[]; startsAt: string | null; priceMin: number | null; priceMax: number | null;
-  priceUnit: 'per_person' | 'total' | 'unknown'; district: string | null;
+  priceUnit: 'per_person' | 'total' | 'unknown'; district: string | null; kind: string | null;
 }
 
 const escapeLike = (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`);
@@ -155,6 +155,7 @@ export async function listCatalog(
     priceMax: (t === 'activity' ? r.costMax : r.priceMax) as number | null,
     priceUnit: (t === 'activity' ? 'total' : r.priceUnit) as 'per_person' | 'total' | 'unknown',
     district: (r.district as string | null) ?? null,
+    kind: t === 'place' ? ((r.kind as string | null) ?? null) : null,
   }));
   return { items, total: Number(n), page: q.page, pageSize: q.pageSize };
 }

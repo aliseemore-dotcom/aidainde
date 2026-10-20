@@ -16,6 +16,8 @@ export interface Candidate {
   description: string;
   status: 'draft' | 'published' | 'cancelled' | 'sold_out' | 'archived';
   isDemo: boolean;
+  /** тип места (только для мест); подбор его не использует, нужен для показа */
+  kind?: string | null;
   tags: string[];
   setting: Setting;
   priceMin: number | null;
@@ -80,6 +82,7 @@ export interface Recommendation {
   priceMax: number | null;
   priceUnit: PriceUnit;
   isDemo: boolean;
+  kind?: string | null;
   tags: string[];
 }
 

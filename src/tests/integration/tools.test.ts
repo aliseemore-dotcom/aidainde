@@ -50,7 +50,9 @@ describe('импорт каталога', () => {
   it('повторный импорт пропускает занятые slug; --publish не публикует непроверенное событие', async () => {
     const again = await runImport(db, parseImport([place()]).records, ADMIN);
     expect(again.created).toBe(0);
-    expect(again.skipped[0]!.message).toMatch(/уже есть/);
+    expect(again.skipped[0]!.message).toMatch(/дубликат существующей/); // та же запись: распознана по смыслу, не только по slug
+    const clash = await runImport(db, parseImport([place({ title: 'Другое место', address: 'ул. Другая, 9' })]).records, ADMIN);
+    expect(clash.skipped[0]!.message).toMatch(/уже есть/); // тот же slug у другой записи
     const ev = { type: 'event', slug: 'real-ev', title: 'Настоящее событие', description: 'Описание настоящего события.', startsAt: '2026-11-01T16:00:00Z', sourceUrl: 'https://example.org/e', tags: ['culture'] };
     const res = await runImport(db, parseImport([ev]).records, ADMIN, { publish: true });
     expect(res.created).toBe(0);

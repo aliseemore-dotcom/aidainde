@@ -83,6 +83,15 @@ describe('таблица -> записи', () => {
     expect(by(7)).toMatchObject({ column: 'Где' });
   });
 
+  it('тип места: по русскому названию или ключу; пусто — не указан; неизвестный — ошибка', () => {
+    const run = (v: string) => csvToRecords('place', `${head('place')}\n${placeRow({ 'Тип места': v })}`);
+    expect(run('Ресторан').records[0]!.kind).toBe('restaurant');
+    expect(run('музей').records[0]!.kind).toBe('museum');
+    expect(run('coffee_shop').records[0]!.kind).toBe('coffee_shop');
+    expect(run('').records[0]).not.toHaveProperty('kind');
+    expect(run('Пиццерия').issues[0]).toMatchObject({ column: 'Тип места' });
+  });
+
   it('подсказывает похожие теги', () => {
     const r = csvToRecords('place', `${head('place')}\n${placeRow({ 'Теги': 'Квиз; Заведения' })}`);
     expect(r.records).toHaveLength(1); // «Квиз» — реальный тег

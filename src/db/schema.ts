@@ -35,6 +35,8 @@ const shared = {
 
 export const places = pgTable('places', {
   ...shared,
+  /** тип места (ресторан, музей…): значения — features/catalog/place-kinds.ts; null = не указан */
+  kind: text('kind'),
   address: text('address').notNull(),
   lat: doublePrecision('lat'),
   lng: doublePrecision('lng'),

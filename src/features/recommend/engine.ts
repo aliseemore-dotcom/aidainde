@@ -66,7 +66,7 @@ function toRec(s: Scored, a: FinalAnswers, tier: Tier, weather?: WeatherInfo): R
     reasons: reasons.length ? reasons : ['Похожая идея рядом с твоим выбором'],
     reasonCodes: codes, notes: notesFor(s, weather),
     when: s.el.occurrence ? { startsAt: s.el.occurrence.startsAt.toISOString(), endsAt: s.el.occurrence.endsAt?.toISOString() ?? null } : null,
-    priceMin: s.c.priceMin, priceMax: s.c.priceMax, priceUnit: s.c.priceUnit, isDemo: s.c.isDemo, tags: s.c.tags,
+    priceMin: s.c.priceMin, priceMax: s.c.priceMax, priceUnit: s.c.priceUnit, isDemo: s.c.isDemo, kind: s.c.kind ?? null, tags: s.c.tags,
   };
 }
 

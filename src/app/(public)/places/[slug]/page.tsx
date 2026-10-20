@@ -6,6 +6,7 @@ import { ExternalLink, MapLink } from '@/components/catalog/MapLink';
 import { PlainText } from '@/components/catalog/PlainText';
 import { ErrorState } from '@/components/catalog/ErrorState';
 import { formatPrice, directionLabel } from '@/features/catalog/presentation';
+import { placeKindLabel } from '@/features/catalog/place-kinds';
 import type { places } from '@/db/schema';
 
 export const dynamic = 'force-dynamic';
@@ -34,7 +35,7 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
   return (
     <DetailShell d={d} previewing={r.value.previewing} backHref="/explore?type=place" backLabel="В каталог">
       <div className="stack stack--tight">
-        <p className="t-meta">Место · {directionLabel(d.tags) ?? 'Досуг'}</p>
+        <p className="t-meta">{placeKindLabel(p.kind) ?? 'Место'} · {directionLabel(d.tags) ?? 'Досуг'}</p>
         <h1 className="t-h1">{p.title}</h1>
       </div>
       <PlainText text={p.description} />

@@ -1,4 +1,5 @@
 import type { ContentType } from '@/features/recommend/types';
+import { PLACE_KINDS } from '@/features/catalog/place-kinds';
 
 export type Kind = 'text' | 'textarea' | 'number' | 'url' | 'datetime' | 'select' | 'tristate' | 'checkbox' | 'lines' | 'hours';
 export interface Field {
@@ -18,6 +19,7 @@ export const FIELDS: Field[] = [
   { name: 'title', label: 'Название', kind: 'text', types: ALL, wide: true },
   { name: 'slug', label: 'Адрес страницы (slug)', kind: 'text', types: ALL, help: 'Латиница, цифры, дефисы: например kofeynya-na-baumana' },
   { name: 'description', label: 'Описание', kind: 'textarea', types: ALL, wide: true, help: 'Только факты. Ничего не выдумываем.' },
+  place('kind', 'Тип места', 'select', { options: [{ v: '', l: 'Не указан' }, ...PLACE_KINDS.map((k) => ({ v: k.key, l: k.label }))] }),
   place('address', 'Адрес', 'text', { wide: true }),
   place('district', 'Район', 'text'),
   place('lat', 'Широта', 'number'), place('lng', 'Долгота', 'number'),

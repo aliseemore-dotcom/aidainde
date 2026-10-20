@@ -29,6 +29,13 @@
       "when": 1791829140863,
       "tag": "0003_metrics_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792524102430,
+      "tag": "0004_place_kind",
+      "breakpoints": true
     }
   ]
 }

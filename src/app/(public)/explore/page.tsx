@@ -89,7 +89,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             <ul className="grid grid--wide" aria-label="Каталог">
               {res.value.items.map((i) => (
                 <li key={i.id}>
-                  <ResultCard card={{ type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit, startsAt: i.startsAt, status: i.status, isDemo: i.isDemo, district: i.district }} />
+                  <ResultCard card={{ type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit, startsAt: i.startsAt, status: i.status, isDemo: i.isDemo, district: i.district, kind: i.kind }} />
                 </li>
               ))}
             </ul>

@@ -18,6 +18,8 @@ export interface Candidate {
   isDemo: boolean;
   /** тип места (только для мест); подбор его не использует, нужен для показа */
   kind?: string | null;
+  /** только события: название площадки */
+  venueTitle?: string | null;
   tags: string[];
   setting: Setting;
   priceMin: number | null;
@@ -52,7 +54,7 @@ export type Tier = 'main' | 'similar' | 'price_unknown';
 
 export type NoteCode =
   | 'check_weather' | 'check_hours' | 'price_unknown' | 'partial_age' | 'capacity_unknown'
-  | 'book_ahead' | 'verify_availability' | 'age_unknown' | 'bad_weather';
+  | 'book_ahead' | 'verify_availability' | 'age_unknown' | 'bad_weather' | 'draft_preview';
 
 export const NOTE_TEXT: Record<NoteCode, string> = {
   check_weather: 'Проверьте погоду перед прогулкой',
@@ -64,6 +66,7 @@ export const NOTE_TEXT: Record<NoteCode, string> = {
   verify_availability: 'Наличие мест проверяйте у организатора',
   age_unknown: 'Возрастные ограничения уточняйте у организатора',
   bad_weather: 'Погода может подвести',
+  draft_preview: 'Черновик: данные не проверены',
 };
 
 export interface Recommendation {
@@ -83,6 +86,9 @@ export interface Recommendation {
   priceUnit: PriceUnit;
   isDemo: boolean;
   kind?: string | null;
+  description?: string;
+  address?: string | null;
+  venueTitle?: string | null;
   tags: string[];
 }
 
@@ -107,6 +113,8 @@ export interface EngineInput {
   now: Date;
   candidates: Candidate[];
   allowDemo: boolean;
+  /** режим предпросмотра: в подборке участвуют черновики (только вне production) */
+  allowDrafts?: boolean;
   /** прогноз на выбранные даты; нет прогноза — undefined */
   weather?: WeatherInfo;
 }

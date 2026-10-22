@@ -7,7 +7,7 @@ import { ErrorState } from '@/components/catalog/ErrorState';
 import { LogoLink } from '@/components/ui/Logo';
 import { ButtonLink } from '@/components/ui/Button';
 import { ApiError } from '@/lib/errors';
-import { allowDemoContent, readEnv, tokenSecret } from '@/lib/env';
+import { contentVisibility, readEnv, tokenSecret } from '@/lib/env';
 import { safe } from '@/lib/db-safe';
 import { weatherFor } from '@/lib/weather';
 import type { Recommendation } from '@/features/recommend/types';
@@ -21,7 +21,7 @@ const BUDGET_LABEL = { free: 'Бесплатно', low: 'До 1 000 ₽', mid: '
 
 const toCard = (i: Recommendation) => ({
   type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit,
-  startsAt: i.when?.startsAt ?? null, isDemo: i.isDemo, kind: i.kind, reasons: i.reasons, notes: i.notes,
+  startsAt: i.when?.startsAt ?? null, isDemo: i.isDemo, kind: i.kind, description: i.description, address: i.address, venueTitle: i.venueTitle, reasons: i.reasons, notes: i.notes,
 });
 
 export default async function ResultsPage({ searchParams }: { searchParams: Promise<{ session?: string }> }) {
@@ -35,7 +35,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
   const res = await safe(async () => {
     const env = readEnv();
     try {
-      return await getResults(await getDb(), session, { now: new Date(), allowDemo: allowDemoContent(env), secret: tokenSecret(env), weather: (range) => weatherFor(range) });
+      return await getResults(await getDb(), session, { now: new Date(), ...contentVisibility(env), secret: tokenSecret(env), weather: (range) => weatherFor(range) });
     } catch (e) {
       if (e instanceof ApiError && (e.code === 'CONTENT_NOT_FOUND' || e.code === 'STALE_QUIZ_VERSION')) return e.code;
       throw e;

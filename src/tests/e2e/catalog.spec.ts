@@ -87,8 +87,11 @@ test.describe('каталог', () => {
   test('вкладки, фильтры, поиск и пустая выдача', async ({ page }) => {
     await page.goto('/explore');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Выбери сам');
+    await expect(page.getByRole('link', { name: 'Места' })).toHaveAttribute('aria-current', 'true'); // по умолчанию — места
+    await page.getByRole('link', { name: 'События' }).click();
     await expect(page.getByRole('link', { name: 'События' })).toHaveAttribute('aria-current', 'true');
     await page.getByRole('link', { name: 'Места' }).click();
+    await expect(page.getByRole('link', { name: 'Места' })).toHaveAttribute('aria-current', 'true');
     await expect(page.getByRole('article').first()).toBeVisible();
     await page.getByRole('link', { name: 'Игры', exact: true }).click();
     await expect(page.getByRole('article').first()).toBeVisible();

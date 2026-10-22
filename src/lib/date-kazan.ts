@@ -69,4 +69,9 @@ export function formatEventMeta(startsAt: Date): string {
   const wd = new Intl.DateTimeFormat('ru-RU', { timeZone: KAZAN_TZ, weekday: 'short' }).format(startsAt);
   return `${wd}, ${timeFmt.format(startsAt)}`;
 }
+const shortDateFmt = new Intl.DateTimeFormat('ru-RU', { timeZone: KAZAN_TZ, weekday: 'short', day: 'numeric', month: 'short' });
+/** «пт, 23 окт., 19:00»: полный ориентир для списков, где события разнесены на недели. */
+export function formatEventWhen(startsAt: Date): string {
+  return `${shortDateFmt.format(startsAt)}, ${timeFmt.format(startsAt)}`;
+}
 export const formatLongDate = (d: Date): string => longFmt.format(d);

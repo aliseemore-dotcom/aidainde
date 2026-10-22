@@ -66,7 +66,7 @@ function toRec(s: Scored, a: FinalAnswers, tier: Tier, weather?: WeatherInfo): R
     reasons: reasons.length ? reasons : ['Похожая идея рядом с твоим выбором'],
     reasonCodes: codes, notes: notesFor(s, weather),
     when: s.el.occurrence ? { startsAt: s.el.occurrence.startsAt.toISOString(), endsAt: s.el.occurrence.endsAt?.toISOString() ?? null } : null,
-    priceMin: s.c.priceMin, priceMax: s.c.priceMax, priceUnit: s.c.priceUnit, isDemo: s.c.isDemo, kind: s.c.kind ?? null, tags: s.c.tags,
+    priceMin: s.c.priceMin, priceMax: s.c.priceMax, priceUnit: s.c.priceUnit, isDemo: s.c.isDemo, kind: s.c.kind ?? null, description: s.c.description, address: s.c.address, venueTitle: s.c.venueTitle ?? null, tags: s.c.tags,
   };
 }
 
@@ -76,11 +76,11 @@ function toRec(s: Scored, a: FinalAnswers, tier: Tier, weather?: WeatherInfo): R
  * -> разнообразие -> блок «Стоимость уточняется».
  */
 export function recommend(input: EngineInput): RecommendationResult {
-  const { answers: a, range, now, allowDemo, weather } = input;
+  const { answers: a, range, now, allowDemo, allowDrafts, weather } = input;
   const penalty = weather ? WEATHER_PENALTY[weather.risk] : 0;
   const eligible: Scored[] = [];
   for (const c of input.candidates) {
-    const el = checkEligibility(c, a, { range, now, allowDemo });
+    const el = checkEligibility(c, a, { range, now, allowDemo, allowDrafts });
     if (!el.ok) continue;
     const m = score(c, a);
     eligible.push({ c, el, m: penalty && isOutdoorish(c) ? { ...m, score: Math.max(0, m.score - penalty) } : m });

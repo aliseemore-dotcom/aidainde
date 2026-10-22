@@ -135,3 +135,8 @@ a.k-chip[aria-current="true"]{background:var(--ink);color:var(--on-ink);font-wei
 
 .k-skeleton{height:180px;border-radius:var(--radius-m);background:var(--surface);animation:k-pulse 1.4s ease-in-out infinite}
 @keyframes k-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* Карточки: описание и адрес; режим предпросмотра */
+.k-card__where{font:500 13px/18px var(--font-sans);color:var(--ink);margin:0}
+.k-card__desc{font:400 13px/18px var(--font-sans);color:var(--ink-muted);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.preview-mode{margin:0;padding:var(--space-2) var(--space-5);background:var(--ink);color:var(--on-ink);font:500 13px/18px var(--font-sans);text-align:center}

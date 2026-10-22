@@ -107,6 +107,7 @@ export const catalogQuery = z.object({
   type: z.enum(['place', 'event', 'activity']).default('place'),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   category: z.string().optional().refine((c) => !c || TAG_KEYS.has(c), 'Неизвестная категория'),
+  kind: z.enum(PLACE_KIND_KEYS).optional(),
   priceMax: z.coerce.number().int().min(0).max(1_000_000).optional(),
   q: z.string().trim().max(80).optional(),
   page: z.coerce.number().int().min(1).max(1000).default(1),

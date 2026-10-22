@@ -42,11 +42,11 @@ export default async function PlacePage({ params, searchParams }: { params: Prom
       <Facts items={[
         { label: 'Адрес', value: p.address, wide: true },
         { label: 'Район', value: p.district },
-        { label: 'Стоимость', value: formatPrice(p.priceMin, p.priceMax, p.priceUnit) },
+        { label: 'Стоимость', value: p.priceMin == null && p.priceMax == null ? null : formatPrice(p.priceMin, p.priceMax, p.priceUnit) },
         { label: 'Возраст', value: ageText(p.ageMin, p.ageMax) },
         { label: 'Компания', value: groupText(p.minParticipants, p.maxParticipants) },
         { label: 'Где', value: SETTING[p.indoorOutdoor] },
-        { label: 'Часы работы', value: hours ?? 'Проверьте часы работы у организатора', wide: true },
+        { label: 'Часы работы', value: hours, wide: true },
       ]} />
       <div className="actions">
         <MapLink address={p.address} lat={p.lat} lng={p.lng} />

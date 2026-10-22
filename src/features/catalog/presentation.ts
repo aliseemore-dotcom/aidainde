@@ -2,8 +2,13 @@ import type { Illustration } from '@/components/ui/Art';
 import { DIRECTION_TAGS, tagLabel } from '@/features/recommend/tag-registry';
 
 /** Какую иллюстрацию из кита и какую плитку (cool = accent-soft, warm = sunset-soft) показывать по тегам. */
-export function illustrationFor(tags: string[]): { art: Illustration; warm: boolean } {
+export function illustrationFor(tags: string[], kind?: string | null): { art: Illustration; warm: boolean } {
   const has = (k: string) => tags.includes(k);
+  // у заведений вид зависит от типа места: так список не состоит из одинаковых плиток
+  if (kind === 'restaurant') return { art: 'echpochmak', warm: true };
+  if (kind === 'cafe') return { art: 'tulip', warm: true };
+  if (kind === 'coffee_shop') return { art: 'tulip', warm: false };
+  if (kind === 'bar') return { art: 'notes', warm: false };
   if (has('walks')) return { art: 'kul-sharif', warm: false };
   if (has('culture')) return { art: 'notes', warm: false };
   if (has('venues') || has('home_cook')) return { art: 'echpochmak', warm: true };

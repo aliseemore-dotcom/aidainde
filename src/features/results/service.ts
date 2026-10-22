@@ -18,7 +18,7 @@ export const SESSION_TTL_DAYS = 30;
 const envelope = z.object({ schemaVersion: z.number().int(), quizType: z.string(), answers: z.unknown() });
 
 export interface Ctx {
-  now: Date; allowDemo: boolean; secret: string; logRecommendations?: boolean;
+  now: Date; allowDemo: boolean; allowDrafts?: boolean; secret: string; logRecommendations?: boolean;
   /** прогноз на даты; не задан или вернул null — работаем без погоды */
   weather?: (range: DateRange) => Promise<WeatherInfo | null>;
 }
@@ -34,11 +34,11 @@ export interface ResultsPayload extends RecommendationResult {
 
 async function compute(db: Db, a: FinalAnswers, range: DateRange, ctx: Ctx): Promise<RecommendationResult> {
   const [candidates, weather] = await Promise.all([
-    loadCandidates(db, { allowDemo: ctx.allowDemo }),
+    loadCandidates(db, { allowDemo: ctx.allowDemo, allowDrafts: ctx.allowDrafts }),
     // сбой источника погоды никогда не ломает подборку
     ctx.weather ? ctx.weather(range).catch(() => null) : Promise.resolve(null),
   ]);
-  return recommend({ answers: a, range, now: ctx.now, candidates, allowDemo: ctx.allowDemo, ...(weather ? { weather } : {}) });
+  return recommend({ answers: a, range, now: ctx.now, candidates, allowDemo: ctx.allowDemo, allowDrafts: ctx.allowDrafts, ...(weather ? { weather } : {}) });
 }
 
 function summarize(a: FinalAnswers): ResultsPayload['answers'] {

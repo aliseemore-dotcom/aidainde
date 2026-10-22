@@ -9,6 +9,8 @@ const schema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().optional(),
   IMAGE_HOSTS: z.string().optional(),
+  PREVIEW_DRAFTS: z.string().optional(),
+  PGLITE_DIR: z.string().optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional().or(z.literal('').transform(() => undefined)),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional().or(z.literal('').transform(() => undefined)),
   VERCEL_ENV: z.string().optional(),
@@ -28,6 +30,19 @@ export function isProductionDeploy(env: Env = readEnv()): boolean {
 
 export function allowDemoContent(env: Env = readEnv()): boolean {
   return !isProductionDeploy(env) && env.ALLOW_DEMO_CONTENT === 'true';
+}
+
+/**
+ * Режим предпросмотра черновиков (для тестирования до публикации): в каталоге, подборке и карточках появляются
+ * записи со статусом «черновик». Включается только PREVIEW_DRAFTS=true и НИКОГДА на боевом деплое.
+ */
+export function allowDraftPreview(env: Env = readEnv()): boolean {
+  return !isProductionDeploy(env) && env.PREVIEW_DRAFTS === 'true';
+}
+
+/** Единое место, где решается, что видят посетители: demo и черновики. */
+export function contentVisibility(env: Env = readEnv()): { allowDemo: boolean; allowDrafts: boolean } {
+  return { allowDemo: allowDemoContent(env), allowDrafts: allowDraftPreview(env) };
 }
 
 /** Секрет для хэширования токенов результатов. В боевом режиме обязателен. */

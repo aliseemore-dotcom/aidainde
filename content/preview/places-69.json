@@ -1,0 +1,888 @@
+[
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "umay",
+    "title": "Умай",
+    "description": "Ресторан «Умай» находится в Казани по адресу: ул. Большая Красная, 6. Место для посещения в городе.",
+    "address": "ул. Большая Красная, 6",
+    "sourceUrl": "https://umayrest.ru/contacts",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "chirem",
+    "title": "Чирэм",
+    "description": "Ресторан «Чирэм» находится в Казани по адресу: Казанский Кремль, проезд Шейнкмана, 5. Место для посещения в городе.",
+    "address": "Казанский Кремль, проезд Шейнкмана, 5",
+    "sourceUrl": "https://go.kzn.ru/tags/vkusno-poest",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "skazka",
+    "title": "Сказка",
+    "description": "Ресторан «Сказка» находится в Казани по адресу: ул. Баумана, 58. Место для посещения в городе.",
+    "address": "ул. Баумана, 58",
+    "sourceUrl": "https://go.kzn.ru/places/semeinoe-kafe-skazka",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "tatar-by-tubatay-mardzhani",
+    "title": "TATAR by Tubatay — Марджани",
+    "description": "Ресторан «TATAR by Tubatay — Марджани» находится в Казани по адресу: ул. Шигабутдина Марджани, 4. Место для посещения в городе.",
+    "address": "ул. Шигабутдина Марджани, 4",
+    "sourceUrl": "https://www.tatar.rest/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "tatar-by-tubatay-musina",
+    "title": "TATAR by Tubatay — Мусина",
+    "description": "Ресторан «TATAR by Tubatay — Мусина» находится в Казани по адресу: ул. Мусина, 1. Место для посещения в городе.",
+    "address": "ул. Мусина, 1",
+    "sourceUrl": "https://www.tatar.rest/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "tatar-by-tubatay-kreml",
+    "title": "TATAR by Tubatay — Кремль",
+    "description": "Ресторан «TATAR by Tubatay — Кремль» находится в Казани по адресу: Казанский Кремль, территория Кремль, 5. Место для посещения в городе.",
+    "address": "Казанский Кремль, территория Кремль, 5",
+    "sourceUrl": "https://www.tatar.rest/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "eniem",
+    "title": "Энием",
+    "description": "Ресторан «Энием» находится в Казани по адресу: ул. Николая Ершова, 62, ТЦ «Арт Центр», 2 этаж. Место для посещения в городе.",
+    "address": "ул. Николая Ершова, 62, ТЦ «Арт Центр», 2 этаж",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-eniem",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "tugan-avylym",
+    "title": "Туган Авылым",
+    "description": "Ресторан «Туган Авылым» находится в Казани по адресу: ул. Туфана Миннуллина, 14/56. Место для посещения в городе.",
+    "address": "ул. Туфана Миннуллина, 14/56",
+    "sourceUrl": "https://tugan-avilim.ru/contacts",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "aulak",
+    "title": "Аулак",
+    "description": "Кофейня «Аулак» находится в Казани по адресу: Казанский Кремль, здание Присутственных мест, подъезд 4. Место для посещения в городе.",
+    "address": "Казанский Кремль, здание Присутственных мест, подъезд 4",
+    "sourceUrl": "https://go.kzn.ru/places/tatarskaia-kofeinia-aulak",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "ak-chynayak",
+    "title": "Ак Чынаяк",
+    "description": "Чайная «Ак Чынаяк» находится в Казани по адресу: Казанский Кремль, территория Кремля, 12. Место для посещения в городе.",
+    "address": "Казанский Кремль, территория Кремля, 12",
+    "sourceUrl": "https://go.kzn.ru/places/cainaia-gostinaia-ak-cynaiak",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "gorynych",
+    "title": "Горыныч",
+    "description": "Ресторан «Горыныч» находится в Казани по адресу: ул. Николая Ершова, 62. Место для посещения в городе.",
+    "address": "ул. Николая Ершова, 62",
+    "sourceUrl": "https://www.afisha.ru/kazan/restaurant/gorynych-1600826/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "priyut-kholostyaka",
+    "title": "Приют Холостяка",
+    "description": "Ресторан «Приют Холостяка» находится в Казани по адресу: ул. Чернышевского, 27А. Место для посещения в городе.",
+    "address": "ул. Чернышевского, 27А",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-priiut-xolostiaka",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "branch-bistro",
+    "title": "Branch bistro",
+    "description": "Бистро «Branch bistro» находится в Казани по адресу: ул. Сибгата Хакима, 62. Место для посещения в городе.",
+    "address": "ул. Сибгата Хакима, 62",
+    "sourceUrl": "https://go.kzn.ru/places/branch-bistro",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "baza",
+    "title": "База",
+    "description": "Ресторан «База» находится в Казани по адресу: ул. Спартаковская, 2Б. Место для посещения в городе.",
+    "address": "ул. Спартаковская, 2Б",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-baza",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "graal",
+    "title": "GRAAL",
+    "description": "Ресторан «GRAAL» находится в Казани по адресу: ул. Баумана, 36. Место для посещения в городе.",
+    "address": "ул. Баумана, 36",
+    "sourceUrl": "https://graalrest.ru/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "chaynaya-shambola",
+    "title": "Чайная Шамбола",
+    "description": "Чайная «Чайная Шамбола» находится в Казани по адресу: ул. Профсоюзная, 16. Место для посещения в городе.",
+    "address": "ул. Профсоюзная, 16",
+    "sourceUrl": "https://go.kzn.ru/places?filter%5Bcategory_slug%5D=restorany",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "kremlin",
+    "title": "Кремлин",
+    "description": "Ресторан «Кремлин» находится в Казани по адресу: ул. Профсоюзная, 4. Место для посещения в городе.",
+    "address": "ул. Профсоюзная, 4",
+    "sourceUrl": "https://go.kzn.ru/places/kremlin",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "markhaba",
+    "title": "Мархаба",
+    "description": "Ресторан «Мархаба» находится в Казани по адресу: ул. Баумана, 7/10. Место для посещения в городе.",
+    "address": "ул. Баумана, 7/10",
+    "sourceUrl": "https://go.kzn.ru/places/caixana-marxaba",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "divine-karla-marksa",
+    "title": "DIVINE — Карла Маркса",
+    "description": "Ресторан «DIVINE — Карла Маркса» находится в Казани по адресу: ул. Карла Маркса, 42А. Место для посещения в городе.",
+    "address": "ул. Карла Маркса, 42А",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-divine",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "divine-nazarbaeva",
+    "title": "DIVINE — Назарбаева",
+    "description": "Ресторан «DIVINE — Назарбаева» находится в Казани по адресу: ул. Назарбаева, 35А. Место для посещения в городе.",
+    "address": "ул. Назарбаева, 35А",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-divine",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "oko",
+    "title": "ОКО",
+    "description": "Ресторан «ОКО» находится в Казани по адресу: ул. Чернышевского, 21, 7 этаж. Место для посещения в городе.",
+    "address": "ул. Чернышевского, 21, 7 этаж",
+    "sourceUrl": "https://go.kzn.ru/places?filter%5Bcategory_slug%5D=restorany",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "1st-gallery-krylovka",
+    "title": "1st Gallery Krylovka",
+    "description": "Ресторан «1st Gallery Krylovka» находится в Казани по адресу: ул. Краснококшайская, 52. Место для посещения в городе.",
+    "address": "ул. Краснококшайская, 52",
+    "sourceUrl": "https://1stgallery.ru/krylovka-lounge/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "utka-v-kotelke",
+    "title": "Утка в котелке",
+    "description": "Ресторан «Утка в котелке» находится в Казани по адресу: ул. Дзержинского, 13. Место для посещения в городе.",
+    "address": "ул. Дзержинского, 13",
+    "sourceUrl": "https://go.kzn.ru/places/utka-v-kotelke",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "sayyar",
+    "title": "Сайяр",
+    "description": "Ресторан «Сайяр» находится в Казани по адресу: ул. Хади Такташа, 74. Место для посещения в городе.",
+    "address": "ул. Хади Такташа, 74",
+    "sourceUrl": "https://go.kzn.ru/places/saiiar",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "vartaziya",
+    "title": "Вартазия",
+    "description": "Ресторан «Вартазия» находится в Казани по адресу: ул. Чистопольская, 40. Место для посещения в городе.",
+    "address": "ул. Чистопольская, 40",
+    "sourceUrl": "https://go.kzn.ru/places/vartaziia",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "artel",
+    "title": "Артель",
+    "description": "Ресторан «Артель» находится в Казани по адресу: ул. Муштари, 18. Место для посещения в городе.",
+    "address": "ул. Муштари, 18",
+    "sourceUrl": "https://go.kzn.ru/places/bistro-artel",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "toloka",
+    "title": "Толока",
+    "description": "Ресторан «Толока» находится в Казани по адресу: ул. Сибгата Хакима, 7. Место для посещения в городе.",
+    "address": "ул. Сибгата Хакима, 7",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-toloka",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "dia",
+    "title": "Dia",
+    "description": "Ресторан «Dia» находится в Казани по адресу: ул. Профсоюзная, 10/14. Место для посещения в городе.",
+    "address": "ул. Профсоюзная, 10/14",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-dia-creek-land",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "kaleidoscope-art-and-dining",
+    "title": "Kaleidoscope Art&Dining",
+    "description": "Ресторан «Kaleidoscope Art&Dining» находится в Казани по адресу: ул. Туфана Миннуллина, 14/56. Место для посещения в городе.",
+    "address": "ул. Туфана Миннуллина, 14/56",
+    "sourceUrl": "https://visit-tatarstan.com/en/places/entertainment/multimediynyy-restoran-kaleydoskop/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "bakhetle-suveniry-i-ugoshcheniya",
+    "title": "Бахетле — сувениры и угощения",
+    "description": "Кафе «Бахетле — сувениры и угощения» находится в Казани по адресу: Казанский Кремль, территория Кремль, 1, корп. 38. Место для посещения в городе.",
+    "address": "Казанский Кремль, территория Кремль, 1, корп. 38",
+    "sourceUrl": "https://pm.kazan-kremlin.ru/prisutstvennye-mesta-restorany/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "kazanda-launzh",
+    "title": "Kazanda лаунж",
+    "description": "Ресторан «Kazanda лаунж» находится в Казани по адресу: ул. Калинина, 3А. Место для посещения в городе.",
+    "address": "ул. Калинина, 3А",
+    "sourceUrl": "https://go.kzn.ru/places/restoran-kazanda-launz",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "utro",
+    "title": "Утро",
+    "description": "Кафе «Утро» находится в Казани по адресу: ул. Дзержинского, 6Б. Место для посещения в городе.",
+    "address": "ул. Дзержинского, 6Б",
+    "sourceUrl": "https://edagda.ru/kazan/restaurant/utro",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "yasnyy",
+    "title": "Ясный",
+    "description": "Кофейня «Ясный» находится в Казани по адресу: ул. Островского, 9. Место для посещения в городе.",
+    "address": "ул. Островского, 9",
+    "sourceUrl": "https://gde.tatar/mesta/yasnyy-ostrovskogo",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "neft",
+    "title": "Нефть",
+    "description": "Кофейня «Нефть» находится в Казани по адресу: ул. Университетская, 7/80. Место для посещения в городе.",
+    "address": "ул. Университетская, 7/80",
+    "sourceUrl": "https://neftcoffee.ru/kontakty/kofeini/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "rannyaya-ptashka",
+    "title": "Ранняя пташка",
+    "description": "Кофейня «Ранняя пташка» находится в Казани по адресу: ул. Астрономическая, 17. Место для посещения в городе.",
+    "address": "ул. Астрономическая, 17",
+    "sourceUrl": "https://www.visit-tatarstan.com/places/cafes-and-restaurants/rannyaya-ptashka/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "khochu-i-budu",
+    "title": "Хочу и буду",
+    "description": "Ресторан «Хочу и буду» находится в Казани по адресу: ул. Баумана, 25. Место для посещения в городе.",
+    "address": "ул. Баумана, 25",
+    "sourceUrl": "https://hochubudu.ru/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "sol",
+    "title": "Соль",
+    "description": "Бар «Соль» находится в Казани по адресу: ул. Профсоюзная, 22. Место для посещения в городе.",
+    "address": "ул. Профсоюзная, 22",
+    "sourceUrl": "https://visit-tatarstan.com/places/entertainment/sol/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "port",
+    "title": "Порт",
+    "description": "Ресторан «Порт» находится в Казани по адресу: ул. Щапова, 49. Место для посещения в городе.",
+    "address": "ул. Щапова, 49",
+    "sourceUrl": "https://go.kzn.ru/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "botanika",
+    "title": "Ботаника",
+    "description": "Кофейня «Ботаника» находится в Казани по адресу: ул. Жуковского, 6. Место для посещения в городе.",
+    "address": "ул. Жуковского, 6",
+    "sourceUrl": "https://www.tripadvisor.ru/Restaurant_Review-g298520-d17724044-Reviews-Botanika-Kazan_Republic_of_Tatarstan_Volga_District.html",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "relab",
+    "title": "ReLab",
+    "description": "Бар «ReLab» находится в Казани по адресу: ул. Баумана, 9А. Место для посещения в городе.",
+    "address": "ул. Баумана, 9А",
+    "sourceUrl": "https://relab.family/shop/relab",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "mr-willard",
+    "title": "Mr. Willard",
+    "description": "Бар «Mr. Willard» находится в Казани по адресу: ул. Галактионова, 6. Место для посещения в городе.",
+    "address": "ул. Галактионова, 6",
+    "sourceUrl": "https://www.afisha.ru/kazan/restaurant/mr-willard-375280/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "terra-et-silva",
+    "title": "Terra et Silva",
+    "description": "Ресторан «Terra et Silva» находится в Казани по адресу: ул. Подлужная, 56. Место для посещения в городе.",
+    "address": "ул. Подлужная, 56",
+    "sourceUrl": "https://terra-silva.ru/kontakty/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "vishnya-zolotaya",
+    "title": "Вишня золотая",
+    "description": "Ресторан «Вишня золотая» находится в Казани по адресу: ул. Ульянова-Ленина, 65. Место для посещения в городе.",
+    "address": "ул. Ульянова-Ленина, 65",
+    "sourceUrl": "https://2gis.ru/kazan/firm/70000001075104195",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "la-casa",
+    "title": "La Casa",
+    "description": "Ресторан «La Casa» находится в Казани по адресу: ул. Муштари, 24. Место для посещения в городе.",
+    "address": "ул. Муштари, 24",
+    "sourceUrl": "https://la-casa.rest/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "more",
+    "title": "More",
+    "description": "Бар «More» находится в Казани по адресу: ул. Карла Маркса, 5. Место для посещения в городе.",
+    "address": "ул. Карла Маркса, 5",
+    "sourceUrl": "https://where2drink.ru/winners_2025/more/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "5-green-bottles",
+    "title": "5 green bottles",
+    "description": "Бар «5 green bottles» находится в Казани по адресу: ул. Алексея Козина, 2. Место для посещения в городе.",
+    "address": "ул. Алексея Козина, 2",
+    "sourceUrl": "https://yandex.com/maps/org/5_green_bottles/163532748509/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "zoya",
+    "title": "Зоя",
+    "description": "Ресторан «Зоя» находится в Казани по адресу: ул. Федосеевская, 1. Место для посещения в городе.",
+    "address": "ул. Федосеевская, 1",
+    "sourceUrl": "https://www.afisha.ru/kazan/restaurant/zoya-1602128/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "skrembl",
+    "title": "Скрэмбл",
+    "description": "Кафе «Скрэмбл» находится в Казани по адресу: ул. Университетская, 10А. Место для посещения в городе.",
+    "address": "ул. Университетская, 10А",
+    "sourceUrl": "https://go.kzn.ru/places/skrembl",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "skuratov-coffee-pushkina",
+    "title": "Skuratov Coffee — Пушкина",
+    "description": "Кофейня «Skuratov Coffee — Пушкина» находится в Казани по адресу: ул. Пушкина, 5/43. Место для посещения в городе.",
+    "address": "ул. Пушкина, 5/43",
+    "sourceUrl": "https://skuratovcoffee.ru/kzn",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "new-kitchen",
+    "title": "New Kitchen",
+    "description": "Бар «New Kitchen» находится в Казани по адресу: ул. Петербургская, 44. Место для посещения в городе.",
+    "address": "ул. Петербургская, 44",
+    "sourceUrl": "https://entermedia.io/food/gid-po-rossijskomu-restorannomu-festivalyu-2026-v-kazani/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "top-hop",
+    "title": "Top Hop",
+    "description": "Бар «Top Hop» находится в Казани по адресу: ул. Баумана, 36. Место для посещения в городе.",
+    "address": "ул. Баумана, 36",
+    "sourceUrl": "https://visit-tatarstan.com/places/cafes-and-restaurants/top_hop/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "zavtrachnaya-peterburgskaya",
+    "title": "Завтрачная — Петербургская",
+    "description": "Кафе «Завтрачная — Петербургская» находится в Казани по адресу: ул. Петербургская, 9. Место для посещения в городе.",
+    "address": "ул. Петербургская, 9",
+    "sourceUrl": "https://www.restoclub.ru/kzn/place/zavtrachnaja",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "surf-coffee-x-muses",
+    "title": "Surf Coffee × Muses",
+    "description": "Кофейня «Surf Coffee × Muses» находится в Казани по адресу: ул. Петербургская, 50, корп. 28. Место для посещения в городе.",
+    "address": "ул. Петербургская, 50, корп. 28",
+    "sourceUrl": "https://www.surfcoffee.ru/surf-coffee-stores/kazan-muse",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "brew-barrel",
+    "title": "Brew Barrel",
+    "description": "Бар «Brew Barrel» находится в Казани по адресу: ул. Островского, 12. Место для посещения в городе.",
+    "address": "ул. Островского, 12",
+    "sourceUrl": "https://brewkzn.ru/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "zoloto",
+    "title": "ZOLOTO",
+    "description": "Ресторан «ZOLOTO» находится в Казани по адресу: ул. Пушкина, 29А. Место для посещения в городе.",
+    "address": "ул. Пушкина, 29А",
+    "sourceUrl": "https://zolotokzn.ru/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "begin-bakery",
+    "title": "Begin Bakery",
+    "description": "Кафе-пекарня «Begin Bakery» находится в Казани по адресу: ул. Горького, 19/8. Место для посещения в городе.",
+    "address": "ул. Горького, 19/8",
+    "sourceUrl": "https://www.begin-bakery.ru/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "sea-salt",
+    "title": "Sea Salt",
+    "description": "Бистро «Sea Salt» находится в Казани по адресу: ул. Сибгата Хакима, 62. Место для посещения в городе.",
+    "address": "ул. Сибгата Хакима, 62",
+    "sourceUrl": "https://www.restoclub.ru/kzn/place/sea-salt",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "grechanka",
+    "title": "Гречанка",
+    "description": "Ресторан «Гречанка» находится в Казани по адресу: ул. Сибгата Хакима, 62. Место для посещения в городе.",
+    "address": "ул. Сибгата Хакима, 62",
+    "sourceUrl": "https://entermedia.io/food/gid-po-rossijskomu-restorannomu-festivalyu-2026-v-kazani/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "mama-varit-kofe",
+    "title": "Мама варит кофе",
+    "description": "Кофейня «Мама варит кофе» находится в Казани по адресу: ул. Баумана, 27. Место для посещения в городе.",
+    "address": "ул. Баумана, 27",
+    "sourceUrl": "https://mamavaritcoffee.ru/locations",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "vio",
+    "title": "VIO",
+    "description": "Бистро «VIO» находится в Казани по адресу: ул. Сибгата Хакима, 62. Место для посещения в городе.",
+    "address": "ул. Сибгата Хакима, 62",
+    "sourceUrl": "https://allcafe.ru/kazan/restoran/vio-bistro/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "tengri",
+    "title": "Тенгри",
+    "description": "Лаундж-бар «Тенгри» находится в Казани по адресу: ул. Островского, 15И. Место для посещения в городе.",
+    "address": "ул. Островского, 15И",
+    "sourceUrl": "https://tengri-kazan.ru/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "anna-bistrot",
+    "title": "Anna Bistrot",
+    "description": "Бистро «Anna Bistrot» находится в Казани по адресу: ул. Бутлерова, 39/18. Место для посещения в городе.",
+    "address": "ул. Бутлерова, 39/18",
+    "sourceUrl": "https://go.kzn.ru/places/bistro-anna-bistrot",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "bar",
+    "slug": "na-bokalchik",
+    "title": "На бокальчик",
+    "description": "Бар «На бокальчик» находится в Казани по адресу: ул. Баумана, 9А. Место для посещения в городе.",
+    "address": "ул. Баумана, 9А",
+    "sourceUrl": "https://entermedia.io/food/vnutrennyaya-kuhnya-open-koll-v-kajt-zakrytie-atelier-mira-i-o-zbek-prodazha-homeboy-i-mnogoe-drugoe/",
+    "tags": [
+      "venues"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "coffee_shop",
+    "slug": "surf-coffee-x-kazan-mall",
+    "title": "Surf Coffee X Kazan Mall",
+    "description": "Кофейня «Surf Coffee X Kazan Mall» находится в Казани по адресу: ул. Павлюхина, 91. Место для посещения в городе.",
+    "address": "ул. Павлюхина, 91",
+    "sourceUrl": "https://www.surfcoffee.ru/surf-coffee-stores",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "new-asia",
+    "title": "New Asia",
+    "description": "Ресторан «New Asia» находится в Казани по адресу: ул. Карла Маркса, 5. Место для посещения в городе.",
+    "address": "ул. Карла Маркса, 5",
+    "sourceUrl": "https://www.afisha.ru/kazan/restaurant/new-asia-1600935/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "na-kryshe",
+    "title": "На Крыше",
+    "description": "Ресторан «На Крыше» находится в Казани по адресу: ул. Баумана, 82, 5 этаж. Место для посещения в городе.",
+    "address": "ул. Баумана, 82, 5 этаж",
+    "sourceUrl": "https://kazan.flamp.ru/metarubric/restorany",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "4-kukhni",
+    "title": "4 кухни",
+    "description": "Ресторан «4 кухни» находится в Казани по адресу: пр. Ибрагимова, 56, ТРК Тандем, 3 этаж. Место для посещения в городе.",
+    "address": "пр. Ибрагимова, 56, ТРК Тандем, 3 этаж",
+    "sourceUrl": "https://prokazan.ru/special_project/view/korporativ-bez-hlopot-lucsie-predlozenia-kazani-na-sezon-2026-2027",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "cafe",
+    "slug": "binkharts",
+    "title": "Binkharts",
+    "description": "Кафе «Binkharts» находится в Казани по адресу: ул. Пушкина, 13. Место для посещения в городе.",
+    "address": "ул. Пушкина, 13",
+    "sourceUrl": "https://yandex.tj/maps/org/binkharts/24503675694/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  },
+  {
+    "type": "place",
+    "kind": "restaurant",
+    "slug": "hemingway",
+    "title": "Hemingway",
+    "description": "Ресторан «Hemingway» находится в Казани по адресу: ул. Баумана, 36. Место для посещения в городе.",
+    "address": "ул. Баумана, 36",
+    "sourceUrl": "https://hemingway.rest/",
+    "tags": [
+      "venues",
+      "venue_food_talk"
+    ]
+  }
+]

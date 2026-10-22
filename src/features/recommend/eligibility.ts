@@ -28,7 +28,13 @@ export function lowerCost(c: Candidate, basis: 'per_person' | 'total', party: nu
   return c.priceUnit === 'per_person' ? v * p : v; // total
 }
 
-const isAdultOnly = (c: Candidate) => (c.ageMin ?? 0) >= 18 || c.tags.includes('adult_only');
+/**
+ * 18+ по данным (ageMin ≥ 18 или тег adult_only) либо бар/клуб без известного возрастного ограничения:
+ * для семей с детьми безопаснее не показывать (§8.5), пока организатор не подтвердил, что детям можно.
+ */
+const ADULT_KINDS = new Set(['bar', 'club']);
+const isAdultOnly = (c: Candidate) =>
+  (c.ageMin ?? 0) >= 18 || c.tags.includes('adult_only') || (!!c.kind && ADULT_KINDS.has(c.kind) && c.ageMin == null && c.ageMax == null);
 const hasKids = (a: FinalAnswers) => a.companion === 'family' && (a.childAgeBands?.length ?? 0) > 0;
 
 function pickOccurrence(c: Candidate, range: DateRange, now: Date): Occurrence | null {
@@ -43,9 +49,11 @@ function pickOccurrence(c: Candidate, range: DateRange, now: Date): Occurrence |
  * Жёсткая фильтрация (§9 шаг 2). Мягкие критерии здесь не участвуют; возраст, дата, вместимость и
  * точный бюджет никогда не ослабляются автоматически.
  */
-export function checkEligibility(c: Candidate, a: FinalAnswers, ctx: { range: DateRange; now: Date; allowDemo: boolean }): Eligibility {
+export function checkEligibility(c: Candidate, a: FinalAnswers, ctx: { range: DateRange; now: Date; allowDemo: boolean; allowDrafts?: boolean }): Eligibility {
   if (c.isDemo && !ctx.allowDemo) return { ok: false, code: 'demo' };
-  if (c.status !== 'published') return { ok: false, code: 'not_published' };
+  // черновики участвуют только в режиме предпросмотра (вне production)
+  const draftOk = !!ctx.allowDrafts && c.status === 'draft';
+  if (c.status !== 'published' && !draftOk) return { ok: false, code: 'not_published' };
 
   // место проведения: дома — только домашние идеи; вне дома — только места и события
   if (a.setting === 'home' && c.type !== 'activity') return { ok: false, code: 'home_requires_idea' };
@@ -55,7 +63,7 @@ export function checkEligibility(c: Candidate, a: FinalAnswers, ctx: { range: Da
 
   let occurrence: Occurrence | null = null;
   if (c.type === 'event') {
-    if (!c.verifiedAt) return { ok: false, code: 'unverified_event' };
+    if (!c.verifiedAt && !draftOk) return { ok: false, code: 'unverified_event' };
     if (c.expiresAt && c.expiresAt < ctx.now) return { ok: false, code: 'expired' };
     occurrence = pickOccurrence(c, ctx.range, ctx.now);
     if (!occurrence) return { ok: false, code: 'no_occurrence' };
@@ -88,6 +96,7 @@ export function checkEligibility(c: Candidate, a: FinalAnswers, ctx: { range: Da
   if (limit != null && cost != null && cost > limit) return { ok: false, code: 'budget' };
 
   const notes: NoteCode[] = [];
+  if (draftOk) notes.push('draft_preview');
   if (c.setting === 'outdoor' || c.setting === 'both') notes.push('check_weather');
   if (c.type === 'place' && !c.hasOpeningHours) notes.push('check_hours');
   if (cost == null) notes.push('price_unknown');

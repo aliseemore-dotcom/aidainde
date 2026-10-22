@@ -5,12 +5,14 @@ import { migrate as migratePg } from 'drizzle-orm/node-postgres/migrator';
 import { drizzle as drizzleLite } from 'drizzle-orm/pglite';
 import { migrate as migrateLite } from 'drizzle-orm/pglite/migrator';
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
+import { eq } from 'drizzle-orm';
 import { Pool } from 'pg';
 import { PGlite } from '@electric-sql/pglite';
 import * as schema from './schema';
-import { allowDemoContent, isProductionDeploy, readEnv } from '@/lib/env';
+import { allowDemoContent, allowDraftPreview, isProductionDeploy, readEnv } from '@/lib/env';
 import { seedTags } from '@/features/catalog/mutations';
 import { seedDemo } from './seed-demo';
+import { seedPreview } from './seed-preview';
 
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
@@ -34,7 +36,7 @@ async function connect(): Promise<Db> {
     return db as unknown as Db;
   }
   if (isProductionDeploy(env)) throw new Error('DATABASE_URL не задан в production');
-  const lite = new PGlite(path.join(process.cwd(), '.pglite'));
+  const lite = new PGlite(path.join(process.cwd(), env.PGLITE_DIR ?? '.pglite'));
   const db = drizzleLite(lite, { schema });
   await migrateLite(db, { migrationsFolder: MIGRATIONS });
   await bootstrapLocal(db as unknown as Db);
@@ -47,6 +49,11 @@ async function bootstrapLocal(db: Db): Promise<void> {
   if (allowDemoContent()) {
     const [any] = await db.select({ id: schema.places.id }).from(schema.places).limit(1);
     if (!any) await seedDemo(db);
+  }
+  // режим предпросмотра: подготовленные данные черновиками (один раз, пока нет реальных записей)
+  if (allowDraftPreview()) {
+    const [real] = await db.select({ id: schema.places.id }).from(schema.places).where(eq(schema.places.isDemo, false)).limit(1);
+    if (!real) console.info('[preview] загружено:', JSON.stringify(await seedPreview(db)).slice(0, 300));
   }
 }
 

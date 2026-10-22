@@ -1,7 +1,7 @@
 import { tagLabel } from './tag-registry';
 import type { Candidate, FinalAnswers, Occurrence } from './types';
 import type { Match } from './scoring';
-import { formatEventMeta } from '@/lib/date-kazan';
+import { formatEventWhen } from '@/lib/date-kazan';
 import { BUDGET_LIMIT } from './eligibility';
 
 const MOOD_TEXT: Record<string, string> = {
@@ -30,6 +30,6 @@ export function explain(c: Candidate, a: FinalAnswers, m: Match, occ: Occurrence
   // не более 4 пунктов; у события дата показывается всегда
   const room = occ ? 3 : 4;
   const out = { reasons: reasons.slice(0, room), codes: codes.slice(0, room) };
-  if (occ) { out.reasons.push(formatEventMeta(occ.startsAt)); out.codes.push('date'); }
+  if (occ) { out.reasons.push(formatEventWhen(occ.startsAt)); out.codes.push('date'); }
   return out;
 }

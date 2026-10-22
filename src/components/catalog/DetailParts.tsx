@@ -9,7 +9,7 @@ import { tagLabel } from '@/features/recommend/tag-registry';
 import type { ContentDetail } from '@/features/catalog/queries';
 
 export function DetailShell({ d, backHref, backLabel, previewing = false, children }: { d: ContentDetail; backHref: string; backLabel: string; previewing?: boolean; children: ReactNode }) {
-  const { art, warm } = illustrationFor(d.tags);
+  const { art, warm } = illustrationFor(d.tags, (d.record as { kind?: string | null }).kind);
   return (
     <div className="page">
       <header className="pagehead">
@@ -17,7 +17,7 @@ export function DetailShell({ d, backHref, backLabel, previewing = false, childr
         <LogoLink />
       </header>
       <div className="stack">
-        {previewing && <PreviewBanner status={d.status} />}
+        {(previewing || d.status === 'draft') && <PreviewBanner status={d.status} />}
         {d.isDemo && <p className="demo-flag" role="note">Демо, вымышленная запись: не настоящее место или событие.</p>}
         {d.media.length > 0 ? (
           <div className="gallery">
@@ -77,5 +77,5 @@ export function groupText(min?: number | null, max?: number | null): string | nu
 }
 
 export function PreviewBanner({ status }: { status: string }) {
-  return <p className="preview-flag" role="note">Предпросмотр для редактора. Статус записи: {status === 'published' ? 'опубликовано' : 'не опубликовано, посетители её не видят'}.</p>;
+  return <p className="preview-flag" role="note">Предпросмотр. Статус записи: {status === 'published' ? 'опубликовано' : 'черновик, данные не проверены, посетители карточку не видят'}.</p>;
 }

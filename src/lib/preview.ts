@@ -3,7 +3,7 @@ import { getDb } from '@/db/client';
 import { getContentBySlug } from '@/features/catalog/queries';
 import type { ContentType } from '@/features/recommend/types';
 import { getAdmin } from './auth';
-import { allowDemoContent } from './env';
+import { contentVisibility } from './env';
 import { safe } from './db-safe';
 
 /**
@@ -13,7 +13,9 @@ import { safe } from './db-safe';
 export function loadDetail(type: ContentType, slug: string, preview: boolean) {
   return safe(async () => {
     const admin = preview ? await getAdmin() : null;
-    const detail = await getContentBySlug(await getDb(), type, slug, { allowDemo: allowDemoContent() || !!admin, includeDraft: !!admin });
+    const { allowDemo, allowDrafts } = contentVisibility();
+    // черновик виден редактору (?preview=1) и всем в режиме предпросмотра (PREVIEW_DRAFTS, не production)
+    const detail = await getContentBySlug(await getDb(), type, slug, { allowDemo: allowDemo || !!admin, includeDraft: !!admin || allowDrafts });
     return { detail, previewing: !!admin };
   });
 }

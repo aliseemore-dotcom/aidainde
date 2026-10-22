@@ -41,7 +41,7 @@ test.describe('админка: полный сценарий редактора'
 
     // предпросмотр редактору доступен
     await page.goto(`/places/${slug}?preview=1`);
-    await expect(page.getByText('Предпросмотр для редактора')).toBeVisible();
+    await expect(page.getByText('Предпросмотр. Статус записи')).toBeVisible();
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('E2E: место для проверки');
 
     await page.goBack();

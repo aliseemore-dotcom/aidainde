@@ -34,12 +34,13 @@ async function imageSet(db: Db, type: ContentType, ids: string[]): Promise<Set<s
 
 // ---------------------------------------------------------------- кандидаты для движка
 
-export async function loadCandidates(db: Db, opts: { allowDemo: boolean }): Promise<Candidate[]> {
+export async function loadCandidates(db: Db, opts: { allowDemo: boolean; allowDrafts?: boolean }): Promise<Candidate[]> {
+  const live = (status: unknown) => (opts.allowDrafts ? inArray(status as never, ['published', 'draft'] as never) : eq(status as never, 'published' as never));
   const demo = (isDemo: unknown) => (opts.allowDemo ? undefined : eq(isDemo as never, false));
   const [pl, ev, ac] = await Promise.all([
-    db.select().from(places).where(and(eq(places.status, 'published'), demo(places.isDemo))),
-    db.select().from(events).where(and(eq(events.status, 'published'), demo(events.isDemo))),
-    db.select().from(activities).where(and(eq(activities.status, 'published'), demo(activities.isDemo))),
+    db.select().from(places).where(and(live(places.status), demo(places.isDemo))),
+    db.select().from(events).where(and(live(events.status), demo(events.isDemo))),
+    db.select().from(activities).where(and(live(activities.status), demo(activities.isDemo))),
   ]);
   const evIds = ev.map((e) => e.id);
   const [pt, et, at, pi, ei, ai, occ, evPlaces] = await Promise.all([
@@ -74,7 +75,7 @@ export async function loadCandidates(db: Db, opts: { allowDemo: boolean }): Prom
       priceMin: e.priceMin, priceMax: e.priceMax, priceUnit: e.priceUnit, ageMin: e.ageMin ?? pl2?.ageMin ?? null, ageMax: e.ageMax,
       minParticipants: null, maxParticipants: e.capacity, soloFriendly: e.soloFriendly, joinOpenGroup: e.joinOpenGroup,
       requiresBooking: e.requiresBooking, durationMinutes: null, occurrences: [own, ...(occBy.get(e.id) ?? [])],
-      expiresAt: e.expiresAt, verifiedAt: e.verifiedAt, sourceUrl: e.sourceUrl, address: pl2?.address ?? null, district: pl2?.district ?? null,
+      expiresAt: e.expiresAt, verifiedAt: e.verifiedAt, sourceUrl: e.sourceUrl, venueTitle: pl2?.title ?? null, address: pl2?.address ?? null, district: pl2?.district ?? null,
       hasOpeningHours: false, hasImage: ei.has(e.id), publishedAt: e.publishedAt, updatedAt: e.updatedAt,
     });
   }
@@ -95,17 +96,18 @@ export interface CardSummary {
   type: ContentType; id: string; slug: string; title: string; status: string; isDemo: boolean;
   tags: string[]; startsAt: string | null; priceMin: number | null; priceMax: number | null;
   priceUnit: 'per_person' | 'total' | 'unknown'; district: string | null; kind: string | null;
+  description: string; address: string | null; venueTitle: string | null;
 }
 
 const escapeLike = (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`);
 
 export async function listCatalog(
-  db: Db, q: CatalogQuery, opts: { allowDemo: boolean; now: Date },
+  db: Db, q: CatalogQuery, opts: { allowDemo: boolean; allowDrafts?: boolean; now: Date },
 ): Promise<{ items: CardSummary[]; total: number; page: number; pageSize: number }> {
   const t = q.type;
   const table = t === 'place' ? places : t === 'event' ? events : activities;
   const conds: (SQL | undefined)[] = [
-    inArray(table.status, PUBLIC_STATUSES[t] as unknown as ('published')[]),
+    inArray(table.status, [...PUBLIC_STATUSES[t], ...(opts.allowDrafts ? ['draft'] : [])] as unknown as ('published')[]),
     opts.allowDemo ? undefined : eq(table.isDemo, false),
   ];
   if (q.category) {
@@ -114,6 +116,7 @@ export async function listCatalog(
         .where(and(eq(contentTags.contentType, t), eq(contentTags.contentId, table.id), eq(tagsTable.key, q.category))),
     ));
   }
+  if (q.kind && t === 'place') conds.push(eq(places.kind, q.kind));
   if (q.q) {
     const like = `%${escapeLike(q.q)}%`;
     conds.push(or(ilike(table.title, like), ilike(table.description, like)));
@@ -147,6 +150,10 @@ export async function listCatalog(
   const rows = (await db.select().from(table).where(where).orderBy(order, asc(table.id))
     .limit(q.pageSize).offset((q.page - 1) * q.pageSize)) as AnyRow[];
   const tm = await tagMap(db, t, rows.map((r) => r.id as string));
+  // площадка события: название и адрес берём у связанного места (если оно есть)
+  const placeIds = t === 'event' ? [...new Set(rows.map((r) => r.placeId as string | null).filter((x): x is string => !!x))] : [];
+  const venues = placeIds.length ? await db.select({ id: places.id, title: places.title, address: places.address }).from(places).where(inArray(places.id, placeIds)) : [];
+  const venueById = new Map(venues.map((v) => [v.id, v]));
   const items = rows.map<CardSummary>((r) => ({
     type: t, id: r.id as string, slug: r.slug as string, title: r.title as string, status: r.status as string, isDemo: r.isDemo as boolean,
     tags: tm.get(r.id as string) ?? [],
@@ -156,6 +163,9 @@ export async function listCatalog(
     priceUnit: (t === 'activity' ? 'total' : r.priceUnit) as 'per_person' | 'total' | 'unknown',
     district: (r.district as string | null) ?? null,
     kind: t === 'place' ? ((r.kind as string | null) ?? null) : null,
+    description: r.description as string,
+    address: t === 'place' ? (r.address as string) : t === 'event' ? venueById.get(r.placeId as string)?.address ?? null : null,
+    venueTitle: t === 'event' ? venueById.get(r.placeId as string)?.title ?? null : null,
   }));
   return { items, total: Number(n), page: q.page, pageSize: q.pageSize };
 }
@@ -181,7 +191,7 @@ export async function getContentBySlug(
     if (!(PUBLIC_STATUSES[type] as readonly string[]).includes(row.status as string)) return null;
     if (row.isDemo && !opts.allowDemo) return null;
   }
-  return buildDetail(db, type, row);
+  return buildDetail(db, type, row, !!opts.includeDraft);
 }
 
 export async function getContentById(db: Db, type: ContentType, id: string): Promise<ContentDetail | null> {
@@ -190,7 +200,7 @@ export async function getContentById(db: Db, type: ContentType, id: string): Pro
   return row ? buildDetail(db, type, row) : null;
 }
 
-async function buildDetail(db: Db, type: ContentType, row: AnyRow): Promise<ContentDetail> {
+async function buildDetail(db: Db, type: ContentType, row: AnyRow, includeDraft = true): Promise<ContentDetail> {
   const id = row.id as string;
   const [tm, mediaRows] = await Promise.all([
     tagMap(db, type, [id]),
@@ -201,7 +211,7 @@ async function buildDetail(db: Db, type: ContentType, row: AnyRow): Promise<Cont
   if (type === 'event') {
     if (row.placeId) {
       const [p] = await db.select().from(places).where(eq(places.id, row.placeId as string)).limit(1);
-      if (p && p.status === 'published') place = { slug: p.slug, title: p.title, address: p.address, lat: p.lat, lng: p.lng };
+      if (p && (p.status === 'published' || includeDraft)) place = { slug: p.slug, title: p.title, address: p.address, lat: p.lat, lng: p.lng };
     }
     occurrences = (await db.select().from(eventOccurrences).where(eq(eventOccurrences.eventId, id)).orderBy(asc(eventOccurrences.startsAt)))
       .map((o) => ({ startsAt: o.startsAt, endsAt: o.endsAt, status: o.status, ticketsUrl: o.ticketsUrl }));
@@ -226,3 +236,12 @@ export async function listPublicSlugs(db: Db, opts: { allowDemo: boolean }) {
   return { places: p, events: e, activities: a };
 }
 
+
+/** Типы мест, которые сейчас есть в каталоге (для фильтра по типу). */
+export async function listPlaceKinds(db: Db, opts: { allowDemo: boolean; allowDrafts?: boolean }): Promise<string[]> {
+  const rows = await db.selectDistinct({ kind: places.kind }).from(places).where(and(
+    inArray(places.status, opts.allowDrafts ? ['published', 'draft'] : ['published']),
+    opts.allowDemo ? undefined : eq(places.isDemo, false),
+  ));
+  return rows.map((r) => r.kind).filter((k): k is string => !!k);
+}

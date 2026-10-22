@@ -19,6 +19,9 @@ export default function HomePage() {
         <div>
           <p className="t-greet">Сәлам!</p>
           <h1 className="t-h1">Хм, чем бы заняться в Казани?</h1>
+          <p className="t-body" style={{ marginTop: 'var(--space-3)', color: 'var(--ink-muted)' }}>
+            Подскажем, куда пойти и чем заняться: ответь на несколько вопросов или выбери сам в каталоге мест и событий.
+          </p>
         </div>
         <ul className="entries" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {ENTRIES.map((e) => (

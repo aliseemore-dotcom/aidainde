@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getDb } from '@/db/client';
-import { listCatalog } from '@/features/catalog/queries';
+import { listCatalog, listPlaceKinds } from '@/features/catalog/queries';
+import { PLACE_KINDS } from '@/features/catalog/place-kinds';
 import { catalogQuery } from '@/features/catalog/validators';
 import { ResultCard } from '@/components/catalog/ResultCard';
 import { EmptyState } from '@/components/catalog/EmptyState';
@@ -9,14 +10,14 @@ import { ErrorState } from '@/components/catalog/ErrorState';
 import { LogoLink } from '@/components/ui/Logo';
 import { ButtonLink } from '@/components/ui/Button';
 import { Search, ICON_STROKE } from '@/components/ui/icons';
-import { allowDemoContent } from '@/lib/env';
+import { contentVisibility } from '@/lib/env';
 import { safe } from '@/lib/db-safe';
 import { DIRECTION_TAGS, tagLabel } from '@/features/recommend/tag-registry';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Каталог', description: 'Места, события и идеи для досуга в Казани.' };
 
-const TYPES = [{ v: 'event', l: 'События' }, { v: 'place', l: 'Места' }, { v: 'activity', l: 'Идеи на дом' }] as const;
+const TYPES = [{ v: 'place', l: 'Места' }, { v: 'event', l: 'События' }, { v: 'activity', l: 'Идеи на дом' }] as const;
 const PRICES = [{ v: '', l: 'Любая цена' }, { v: '0', l: 'Бесплатно' }, { v: '1000', l: 'До 1 000 ₽' }, { v: '3000', l: 'До 3 000 ₽' }, { v: '5000', l: 'До 5 000 ₽' }];
 
 function href(params: Record<string, string | undefined>) {
@@ -28,12 +29,15 @@ function href(params: Record<string, string | undefined>) {
 
 export default async function ExplorePage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const raw = await searchParams;
-  const parsed = catalogQuery.safeParse({ type: 'event', ...Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== '' && v !== undefined)) });
+  const parsed = catalogQuery.safeParse({ type: 'place', ...Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== '' && v !== undefined)) });
   // мусор в адресе не ломает страницу: откатываемся к значениям по умолчанию
-  const q = parsed.success ? parsed.data : catalogQuery.parse({ type: 'event' });
-  const base = { type: q.type, category: q.category, q: q.q, priceMax: q.priceMax?.toString(), date: q.date };
+  const q = parsed.success ? parsed.data : catalogQuery.parse({ type: 'place' });
+  const base = { type: q.type, category: q.category, kind: q.kind, q: q.q, priceMax: q.priceMax?.toString(), date: q.date };
 
-  const res = await safe(async () => listCatalog(await getDb(), q, { allowDemo: allowDemoContent(), now: new Date() }));
+  const vis = contentVisibility();
+  const res = await safe(async () => listCatalog(await getDb(), q, { ...vis, now: new Date() }));
+  const kindsRes = q.type === 'place' ? await safe(async () => listPlaceKinds(await getDb(), vis)) : null;
+  const kinds = kindsRes?.ok ? PLACE_KINDS.filter((k) => kindsRes.value.includes(k.key)) : [];
   const pages = res.ok ? Math.max(1, Math.ceil(res.value.total / q.pageSize)) : 1;
 
   return (
@@ -51,6 +55,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
         <form className="searchform" action="/explore" method="get" role="search">
           <input type="hidden" name="type" value={q.type} />
           {q.category && <input type="hidden" name="category" value={q.category} />}
+          {q.kind && <input type="hidden" name="kind" value={q.kind} />}
           <div className="k-search">
             <Search size={22} strokeWidth={ICON_STROKE} aria-hidden="true" />
             <label className="k-sr" htmlFor="q">Поиск по каталогу</label>
@@ -69,6 +74,15 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             <button type="submit" className="k-btn k-btn--sunken">Применить</button>
           </div>
         </form>
+
+        {kinds.length > 1 && (
+          <nav aria-label="Тип места"><div className="chips chips--scroll">
+            <Link className="k-chip" href={href({ ...base, kind: undefined })} aria-current={!q.kind ? 'true' : undefined}>Все типы</Link>
+            {kinds.map((k) => (
+              <Link key={k.key} className="k-chip" href={href({ ...base, kind: k.key })} aria-current={q.kind === k.key ? 'true' : undefined}>{k.label}</Link>
+            ))}
+          </div></nav>
+        )}
 
         {q.type !== 'activity' && (
           <nav aria-label="Категория"><div className="chips chips--scroll">
@@ -89,7 +103,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
             <ul className="grid grid--wide" aria-label="Каталог">
               {res.value.items.map((i) => (
                 <li key={i.id}>
-                  <ResultCard card={{ type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit, startsAt: i.startsAt, status: i.status, isDemo: i.isDemo, district: i.district, kind: i.kind }} />
+                  <ResultCard card={{ type: i.type, slug: i.slug, title: i.title, tags: i.tags, priceMin: i.priceMin, priceMax: i.priceMax, priceUnit: i.priceUnit, startsAt: i.startsAt, status: i.status, isDemo: i.isDemo, district: i.district, kind: i.kind, description: i.description, address: i.address, venueTitle: i.venueTitle }} />
                 </li>
               ))}
             </ul>

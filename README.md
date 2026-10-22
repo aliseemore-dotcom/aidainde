@@ -16,6 +16,15 @@ npm run dev                     # http://localhost:3000
 
 Без `DATABASE_URL` приложение само поднимает встроенную БД PGlite в `.pglite/`, применяет миграции, заводит словарь тегов и (при `ALLOW_DEMO_CONTENT=true`) **демо-записи**. Все демо-записи вымышлены, помечены `isDemo=true` и подписаны «Демо, вымышленная запись».
 
+## Просмотр и тестирование MVP на подготовленных данных
+
+```bash
+npm install
+echo "PREVIEW_DRAFTS=true" > .env.local
+npm run dev          # http://localhost:3000
+```
+Режим предпросмотра сам загружает черновики из `content/preview/` (69 заведений и 64 события) во встроенную локальную базу и показывает их в каталоге, подборке и карточках с плашкой «Режим предпросмотра». Без флага черновики посетителям не видны, на боевом деплое флаг не действует. Проверка полного пути: `npm run build && npm run test:preview` (мобильный, планшет, десктоп).
+
 ## Переменные окружения
 
 | Переменная | Назначение |
@@ -26,6 +35,8 @@ npm run dev                     # http://localhost:3000
 | `ALLOW_DEMO_CONTENT` | `true` — показывать demo. На production игнорируется |
 | `IMAGE_HOSTS` | Разрешённые https-домены картинок для админки |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Общий счётчик запросов в Redis (рекомендуется на Vercel). Нет значений — счётчик в памяти инстанса; сбой Redis не ломает сайт |
+| `PREVIEW_DRAFTS` | `true` — показывать черновики и грузить `content/preview` в локальную БД. Не действует на production |
+| `PGLITE_DIR` | Папка локальной БД (по умолчанию `.pglite`) |
 | `LOG_RECOMMENDATIONS` | `true` — писать выданные рекомендации в `recommendation_logs` (без ПД) |
 | `NEXT_PUBLIC_SITE_URL` | Адрес сайта для sitemap/OpenGraph |
 | `APP_ENV` / `VERCEL_ENV` | `production` включает боевые ограничения |

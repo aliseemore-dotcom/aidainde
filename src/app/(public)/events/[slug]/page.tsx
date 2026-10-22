@@ -43,7 +43,7 @@ export default async function EventPage({ params, searchParams }: { params: Prom
       </div>
       <PlainText text={e.description} />
       <Facts items={[
-        { label: 'Стоимость', value: formatPrice(e.priceMin, e.priceMax, e.priceUnit) },
+        { label: 'Стоимость', value: e.priceMin == null && e.priceMax == null ? null : formatPrice(e.priceMin, e.priceMax, e.priceUnit) },
         { label: 'Возраст', value: ageText(e.ageMin, e.ageMax) },
         { label: 'Место', value: d.place ? <Link href={`/places/${d.place.slug}`}>{d.place.title}</Link> : null, wide: true },
         { label: 'Адрес', value: d.place?.address, wide: true },
